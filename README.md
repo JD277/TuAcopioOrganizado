@@ -1,9 +1,17 @@
+<p align="center">
+  <img src="./Assets/asa-removebg-preview.png" alt="Logo" width="300" height="300" style="border-radius: 50%; background-color: #ffffff; padding: 5px;" />
+</p>
+
 # TuAcopioOrganizado
 
 TuAcopioOrganizado es una aplicación descentralizada hecha por Analogic LLC, en colaboración con estudiantes de la UDO y del Club de Robótica de la U.E. Colegio Eduardo Blanco, Novu Maker 3D academy, diseñada para ayudar a administrar los centros de acopio.
 
-
-
+  <p align="center">
+    <img src="./Assets/club_robotica.png" width="150" height="150" style="border-radius: 50%; background-color: #ffffff; padding: 15px;" />  
+    <img src="./Assets/logo_analogic" width="150" height="150" style="border-radius: 50%; background-color: #ffffff; padding: 15px;" />   
+    <img src="./Assets/logo_novu@3x.png" alt="Novu Maker 3D academy" width="150" height="150" justify="center" />
+  </p>
+  
 ## Indice
 - [Prerequisitos](#Prerequisitos)
 - [Instalación](#Instalación)
