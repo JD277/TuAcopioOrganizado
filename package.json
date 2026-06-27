@@ -1,0 +1,21 @@
+{
+  "name": "uecebdonaciones",
+  "version": "1.0.0",
+  "description": "TuAcopioOrganizado es una aplicación descentralizada hecha por Analogic LLC, en colaboración con estudiantes de la UDO y del Club de Robótica de la U.E. Colegio Eduardo Blanco, diseñada para ayudar a administrar los centros de acopio.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JD277/TuAcopioOrganizado.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/JD277/TuAcopioOrganizado/issues"
+  },
+  "homepage": "https://github.com/JD277/TuAcopioOrganizado#readme"
+}
