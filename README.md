@@ -1,6 +1,8 @@
 # TuAcopioOrganizado
 
-TuAcopioOrganizado es una aplicación descentralizada hecha por Analogic LLC, en colaboración con estudiantes de la UDO y del Club de Robótica de la U.E. Colegio Eduardo Blanco, diseñada para ayudar a administrar los centros de acopio.
+TuAcopioOrganizado es una aplicación descentralizada hecha por Analogic LLC, en colaboración con estudiantes de la UDO y del Club de Robótica de la U.E. Colegio Eduardo Blanco, Novu Maker 3D academy, diseñada para ayudar a administrar los centros de acopio.
+
+
 
 ## Indice
 - [Prerequisitos](#Prerequisitos)
