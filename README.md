@@ -37,7 +37,9 @@ La ventana de "Registro" está separada en 3 partes:
 
 Al dar click al botón "Nueva Donación" se va a desplegar una mini ventana de opciones nueva, tal como se muestra a continuación: 
 
+<p align="center">
 <img width="515" height="625" alt="registrar-nueva-donación" src="https://github.com/user-attachments/assets/1cbb8aed-cca2-4fd9-b179-01d169749ebe" />
+</p>
 
 En esta ventana se peude elegir la **categoría** (desde el Panel de Administración se pueden añadir más categorías), la cantidad y unidad de la donación, añadir la persona o institución donante, añadir una imagen del producto (opcional) y notas adicionales (opcional). Por último, se puede cancelar el registro de la donación, o guardar la donación. Tras añadir la donación, aparecerá en la parte inferior en las últimas donaciones realizadas.
 
