@@ -7,10 +7,10 @@ TuAcopioOrganizado es una aplicación descentralizada hecha por Analogic LLC, en
 - [Instalación](#Instalación)
   
 ## Prerequisitos
-Los siguientes paquetes son necesarios para el uso de la aplicación:
-- [git](https://git-scm.com/install/)
-- [html5] HTML5 
-  
+Para ejecutar esta aplicación, asegúrate de tener instalado lo siguiente:
+* **[Git](https://git-scm.com/install/)**: Sistema de control de versiones.
+* **[HTML5](https://developer.mozilla.org/es/docs/Web/HTML)**: Navegador web moderno compatible con HTML5.
+
 ## Instalación
 1. Clonar el repositorio
       ```bash
