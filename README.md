@@ -15,5 +15,5 @@ Los siguientes paquetes son necesarios para el uso de la aplicación:
 ## Instalación
 1. Clonar el repositorio
       ```bash
-   git clone https://github.com
+   git clone https://github.com/JD277/TuAcopioOrganizado.git
    ```
