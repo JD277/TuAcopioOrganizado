@@ -74,7 +74,7 @@
                          Categorías
                     </button>
                     <button onclick="cambiarPestana('importar')" id="tab-importar" class="px-4 py-2 rounded-lg font-semibold text-sm text-slate-600 hover:bg-slate-100">
-                        📥 Importar/Exportar
+                         Importar/Exportar
                     </button>
                 </nav>
             </div>
@@ -121,7 +121,7 @@
                 <div class="flex items-center justify-between mb-6 flex-wrap gap-3">
                     <div>
                         <h3 class="font-bold text-lg text-slate-900">Gestión de Productos</h3>
-                        <p class="text-sm text-slate-500">Marca productos como excedentes o añade nuevos</p>
+                        <p class="text-sm text-slate-500">Edita, marca como excedentes o añade nuevos productos</p>
                     </div>
                     <button onclick="abrirModalNuevoProducto()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold text-sm flex items-center gap-2">
                         ➕ Nuevo Producto
@@ -163,7 +163,6 @@
                         Importar Datos desde CSV
                     </h4>
                     
-                    <!-- Selector de tipo de datos -->
                     <div class="mb-4">
                         <label class="block text-sm font-semibold text-slate-700 mb-2">¿Qué tipo de datos vas a importar?</label>
                         <select id="tipo-importacion" onchange="cambiarTipoImportacion()" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white">
@@ -174,7 +173,6 @@
                         </select>
                     </div>
 
-                    <!-- Zona de drop -->
                     <div id="drop-zone" class="drop-zone border-2 border-dashed border-slate-300 rounded-xl p-8 text-center cursor-pointer hover:border-blue-400" onclick="document.getElementById('file-input').click()">
                         <input type="file" id="file-input" accept=".csv" onchange="handleFileSelect(event)" class="hidden">
                         <div id="drop-content">
@@ -187,7 +185,6 @@
                         </div>
                     </div>
 
-                    <!-- Preview de datos -->
                     <div id="preview-importacion" class="hidden mt-4">
                         <div class="flex items-center justify-between mb-3">
                             <h5 class="font-semibold text-slate-900">Vista previa de datos a importar</h5>
@@ -214,7 +211,6 @@
                         </div>
                     </div>
 
-                    <!-- Errores de validación -->
                     <div id="errores-importacion" class="hidden mt-4 bg-red-50 border border-red-200 rounded-lg p-4">
                         <h5 class="font-semibold text-red-900 mb-2">⚠️ Errores encontrados</h5>
                         <ul id="lista-errores" class="text-sm text-red-700 space-y-1"></ul>
@@ -229,7 +225,7 @@
                     </h4>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
                         <button onclick="exportarCSV('donaciones')" class="bg-white hover:bg-slate-50 border border-slate-200 rounded-lg p-4 text-left transition group">
-                            <div class="text-2xl mb-2">📦</div>
+                            <div class="text-2xl mb-2"></div>
                             <div class="font-semibold text-slate-900">Donaciones</div>
                             <div class="text-xs text-slate-500 mt-1">Exportar inventario completo</div>
                         </button>
@@ -244,7 +240,7 @@
                             <div class="text-xs text-slate-500 mt-1">Exportar catálogo de productos</div>
                         </button>
                         <button onclick="exportarCSV('categorias')" class="bg-white hover:bg-slate-50 border border-slate-200 rounded-lg p-4 text-left transition group">
-                            <div class="text-2xl mb-2">📁</div>
+                            <div class="text-2xl mb-2"></div>
                             <div class="font-semibold text-slate-900">Categorías</div>
                             <div class="text-xs text-slate-500 mt-1">Exportar categorías del sistema</div>
                         </button>
@@ -254,7 +250,7 @@
                 <!-- Plantillas CSV -->
                 <div class="bg-gradient-to-br from-purple-50 to-pink-50 border border-purple-200 rounded-2xl p-6">
                     <h4 class="font-bold text-slate-900 mb-4 flex items-center gap-2">
-                        <span class="text-2xl">📝</span>
+                        <span class="text-2xl"></span>
                         Descargar Plantillas CSV
                     </h4>
                     <p class="text-sm text-slate-600 mb-4">Usa estas plantillas para asegurar el formato correcto al importar datos</p>
@@ -264,7 +260,7 @@
                             <div class="text-xs text-slate-500 mt-1">Formato para cargar donaciones</div>
                         </button>
                         <button onclick="descargarPlantilla('solicitudes')" class="bg-white hover:bg-slate-50 border border-slate-200 rounded-lg p-4 text-left transition">
-                            <div class="font-semibold text-slate-900 text-sm">📋 Plantilla Solicitudes</div>
+                            <div class="font-semibold text-slate-900 text-sm"> Plantilla Solicitudes</div>
                             <div class="text-xs text-slate-500 mt-1">Formato para cargar solicitudes</div>
                         </button>
                         <button onclick="descargarPlantilla('productos')" class="bg-white hover:bg-slate-50 border border-slate-200 rounded-lg p-4 text-left transition">
@@ -297,7 +293,7 @@
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-slate-700 mb-2">Emoji / Ícono</label>
-                    <input type="text" id="nueva-cat-emoji" required maxlength="2" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-2xl" placeholder="" value="📦">
+                    <input type="text" id="nueva-cat-emoji" required maxlength="2" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-2xl" placeholder="" value="">
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-slate-700 mb-2">Color</label>
@@ -316,16 +312,18 @@
         </div>
     </div>
 
-    <!-- MODAL: Nuevo Producto -->
+    <!-- MODAL: Nuevo/Editar Producto -->
     <div id="modal-producto" class="hidden fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full fade-in">
             <div class="border-b border-slate-200 px-6 py-4 flex items-center justify-between">
-                <h3 class="font-bold text-lg text-slate-900">Añadir Producto</h3>
+                <h3 class="font-bold text-lg text-slate-900" id="titulo-modal-producto">Añadir Producto</h3>
                 <button onclick="cerrarModalProducto()" class="text-slate-400 hover:text-slate-600">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>
-            <form onsubmit="guardarNuevoProducto(event)" class="p-6 space-y-4">
+            <form onsubmit="guardarProducto(event)" class="p-6 space-y-4">
+                <input type="hidden" id="producto-editar-key" value="">
+                <input type="hidden" id="producto-editar-nombre-original" value="">
                 <div>
                     <label class="block text-sm font-semibold text-slate-700 mb-2">Categoría</label>
                     <select id="nuevo-producto-categoria" required class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white">
@@ -342,7 +340,62 @@
                 </div>
                 <div class="flex gap-3 pt-2">
                     <button type="button" onclick="cerrarModalProducto()" class="flex-1 px-4 py-2.5 border border-slate-300 rounded-lg font-semibold text-slate-700 hover:bg-slate-50 transition">Cancelar</button>
-                    <button type="submit" class="flex-1 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold shadow-md transition">Añadir</button>
+                    <button type="submit" class="flex-1 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold shadow-md transition" id="btn-guardar-producto">Añadir</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!--  MODAL: Editar Donación -->
+    <div id="modal-editar-donacion" class="hidden fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full fade-in">
+            <div class="border-b border-slate-200 px-6 py-4 flex items-center justify-between">
+                <h3 class="font-bold text-lg text-slate-900">Editar Donación</h3>
+                <button onclick="cerrarModalEditarDonacion()" class="text-slate-400 hover:text-slate-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+            <form onsubmit="guardarEdicionDonacion(event)" class="p-6 space-y-4">
+                <input type="hidden" id="editar-donacion-id">
+                
+                <div class="bg-slate-50 rounded-lg p-4 mb-4">
+                    <p class="text-xs text-slate-500 mb-1">Producto</p>
+                    <p class="font-semibold text-slate-900" id="editar-donacion-producto"></p>
+                    <p class="text-xs text-slate-500 mt-2" id="editar-donacion-categoria"></p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-2">Cantidad</label>
+                        <input type="number" id="editar-donacion-cantidad" min="1" required class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-2">Unidad</label>
+                        <select id="editar-donacion-unidad" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white">
+                            <option value="unidades">Unidades</option>
+                            <option value="cajas">Cajas</option>
+                            <option value="paquetes">Paquetes</option>
+                            <option value="litros">Litros</option>
+                            <option value="kilos">Kilos</option>
+                            <option value="bolsas">Bolsas</option>
+                            <option value="pares">Pares</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-2">Donante</label>
+                    <input type="text" id="editar-donacion-donante" required class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-2">Notas</label>
+                    <textarea id="editar-donacion-notas" rows="3" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none resize-none"></textarea>
+                </div>
+
+                <div class="flex gap-3 pt-4 border-t border-slate-200">
+                    <button type="button" onclick="cerrarModalEditarDonacion()" class="flex-1 px-4 py-2.5 border border-slate-300 rounded-lg font-semibold text-slate-700 hover:bg-slate-50 transition">Cancelar</button>
+                    <button type="submit" class="flex-1 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold shadow-md transition">Guardar Cambios</button>
                 </div>
             </form>
         </div>
@@ -366,7 +419,7 @@
             higiene:   { nombre: 'Higiene',   emoji: '🧴', color: 'blue' },
             alimentos: { nombre: 'Alimentos', emoji: '🍚', color: 'green' },
             farmacia:  { nombre: 'Farmacia',  emoji: '💊', color: 'red' },
-            ropa:      { nombre: 'Ropa',      emoji: '👕', color: 'purple' }
+            ropa:      { nombre: 'Ropa',      emoji: '', color: 'purple' }
         };
 
         const coloresDisponibles = [
@@ -479,7 +532,7 @@
                                 <p class="text-xs text-slate-500">${cat.nombre}</p>
                             </div>
                         </div>
-                        <button onclick="quitarExcedente('${p.categoria}', '${p.nombre}')" class="text-xs text-red-600 hover:text-red-700 font-medium">Quitar</button>
+                        <button onclick="quitarExcedente('${p.categoria}', '${p.nombre.replace(/'/g, "\\'")}')" class="text-xs text-red-600 hover:text-red-700 font-medium">Quitar</button>
                     </div>
                 `;
             }).join('');
@@ -642,13 +695,13 @@
                 return;
             }
             
-            contenedor.innerHTML = productos.map(p => {
+            contenedor.innerHTML = productos.map((p, index) => {
                 const cat = todasCategorias[p.categoria] || { nombre: p.categoria, emoji: '📦', color: 'slate' };
                 const estilo = estilosColor[cat.color] || estilosColor.slate;
                 const esExcedente = productosExcedentes.some(e => e.categoria === p.categoria && e.nombre === p.nombre);
                 
                 return `
-                    <div class="flex items-center justify-between bg-white border border-slate-200 rounded-lg p-4">
+                    <div class="flex items-center justify-between bg-white border border-slate-200 rounded-lg p-4" data-producto-index="${index}">
                         <div class="flex items-center gap-3">
                             <div class="w-10 h-10 ${estilo.bg} rounded-lg flex items-center justify-center text-lg">${cat.emoji}</div>
                             <div>
@@ -658,14 +711,46 @@
                         </div>
                         <div class="flex items-center gap-2">
                             <label class="flex items-center gap-2 cursor-pointer">
-                                <input type="checkbox" ${esExcedente ? 'checked' : ''} onchange="toggleExcedente('${p.categoria}', '${p.nombre}')" class="w-4 h-4 text-amber-600 rounded">
+                                <input type="checkbox" ${esExcedente ? 'checked' : ''} 
+                                    onchange="toggleExcedente('${p.categoria}', '${p.nombre.replace(/'/g, "\\'")}')" 
+                                    class="w-4 h-4 text-amber-600 rounded">
                                 <span class="text-sm text-slate-700">Excedente</span>
                             </label>
-                            ${!p.esFijo ? `<button onclick="eliminarProducto('${p.categoria}', '${p.nombre}')" class="text-red-500 hover:text-red-700 ml-2">🗑</button>` : ''}
+                            ${!p.esFijo ? `
+                                <button class="btn-editar-producto text-blue-500 hover:text-blue-700 ml-2" 
+                                    title="Editar" 
+                                    data-categoria="${p.categoria}" 
+                                    data-nombre="${p.nombre}">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                    </svg>
+                                </button>
+                                <button class="btn-eliminar-producto text-red-500 hover:text-red-700 ml-2" 
+                                    title="Eliminar"
+                                    data-categoria="${p.categoria}" 
+                                    data-nombre="${p.nombre}">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                    </svg>
+                                </button>
+                            ` : ''}
                         </div>
                     </div>
                 `;
             }).join('');
+            
+            // Event listeners para botones de editar y eliminar
+            contenedor.querySelectorAll('.btn-editar-producto').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    abrirModalEditarProducto(this.dataset.categoria, this.dataset.nombre);
+                });
+            });
+            
+            contenedor.querySelectorAll('.btn-eliminar-producto').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    eliminarProducto(this.dataset.categoria, this.dataset.nombre);
+                });
+            });
         }
 
         function toggleExcedente(categoria, nombre) {
@@ -703,6 +788,25 @@
             mostrarToast('Producto eliminado');
         }
 
+        function abrirModalEditarProducto(categoria, nombreOriginal) {
+            const select = document.getElementById('nuevo-producto-categoria');
+            const todasCategorias = { ...configCategorias, ...categoriasPersonalizadas };
+            select.innerHTML = '<option value="">Selecciona...</option>' + 
+                Object.entries(todasCategorias).map(([k, c]) => `<option value="${k}">${c.emoji} ${c.nombre}</option>`).join('');
+            
+            select.value = categoria;
+            document.getElementById('nuevo-producto-nombre').value = nombreOriginal;
+            document.getElementById('nuevo-producto-excedente').checked = productosExcedentes.some(e => e.categoria === categoria && e.nombre === nombreOriginal);
+            
+            document.getElementById('producto-editar-key').value = categoria;
+            document.getElementById('producto-editar-nombre-original').value = nombreOriginal;
+            
+            document.getElementById('titulo-modal-producto').textContent = 'Editar Producto';
+            document.getElementById('btn-guardar-producto').textContent = 'Guardar Cambios';
+            
+            document.getElementById('modal-producto').classList.remove('hidden');
+        }
+
         function abrirModalNuevoProducto() {
             const select = document.getElementById('nuevo-producto-categoria');
             const todasCategorias = { ...configCategorias, ...categoriasPersonalizadas };
@@ -710,6 +814,10 @@
                 Object.entries(todasCategorias).map(([k, c]) => `<option value="${k}">${c.emoji} ${c.nombre}</option>`).join('');
             document.getElementById('nuevo-producto-nombre').value = '';
             document.getElementById('nuevo-producto-excedente').checked = false;
+            document.getElementById('producto-editar-key').value = '';
+            document.getElementById('producto-editar-nombre-original').value = '';
+            document.getElementById('titulo-modal-producto').textContent = 'Añadir Producto';
+            document.getElementById('btn-guardar-producto').textContent = 'Añadir';
             document.getElementById('modal-producto').classList.remove('hidden');
         }
 
@@ -721,6 +829,10 @@
             select.value = categoriaKey;
             document.getElementById('nuevo-producto-nombre').value = '';
             document.getElementById('nuevo-producto-excedente').checked = false;
+            document.getElementById('producto-editar-key').value = '';
+            document.getElementById('producto-editar-nombre-original').value = '';
+            document.getElementById('titulo-modal-producto').textContent = 'Añadir Producto';
+            document.getElementById('btn-guardar-producto').textContent = 'Añadir';
             document.getElementById('modal-producto').classList.remove('hidden');
             setTimeout(() => document.getElementById('nuevo-producto-nombre').focus(), 100);
         }
@@ -729,40 +841,141 @@
             document.getElementById('modal-producto').classList.add('hidden');
             document.getElementById('nuevo-producto-nombre').value = '';
             document.getElementById('nuevo-producto-excedente').checked = false;
+            document.getElementById('producto-editar-key').value = '';
+            document.getElementById('producto-editar-nombre-original').value = '';
+            document.getElementById('titulo-modal-producto').textContent = 'Añadir Producto';
+            document.getElementById('btn-guardar-producto').textContent = 'Añadir';
         }
 
-        function guardarNuevoProducto(event) {
+        function guardarProducto(event) {
             event.preventDefault();
             const categoria = document.getElementById('nuevo-producto-categoria').value;
             const nombre = document.getElementById('nuevo-producto-nombre').value.trim();
             const esExcedente = document.getElementById('nuevo-producto-excedente').checked;
+            const editarKey = document.getElementById('producto-editar-key').value;
+            const nombreOriginal = document.getElementById('producto-editar-nombre-original').value;
             
             if (!categoria || !nombre) return;
             
-            if (!productosPersonalizados[categoria]) {
-                productosPersonalizados[categoria] = [];
-            }
-            
-            const todosLosProductos = obtenerProductosCategoria(categoria);
-            if (todosLosProductos.includes(nombre)) {
-                alert('Este producto ya existe en la categoría');
-                return;
-            }
-            
-            productosPersonalizados[categoria].push(nombre);
-            localStorage.setItem('productos_personalizados_eb', JSON.stringify(productosPersonalizados));
-            
-            if (esExcedente) {
-                productosExcedentes.push({ categoria, nombre });
+            if (editarKey && nombreOriginal) {
+                if (nombre !== nombreOriginal) {
+                    const todosLosProductos = obtenerProductosCategoria(categoria);
+                    if (todosLosProductos.includes(nombre)) {
+                        alert('Ya existe un producto con ese nombre en esta categoría');
+                        return;
+                    }
+                    
+                    if (productosPersonalizados[categoria]) {
+                        const index = productosPersonalizados[categoria].indexOf(nombreOriginal);
+                        if (index >= 0) {
+                            productosPersonalizados[categoria][index] = nombre;
+                        }
+                    }
+                    
+                    const excedenteIndex = productosExcedentes.findIndex(p => p.categoria === categoria && p.nombre === nombreOriginal);
+                    if (excedenteIndex >= 0) {
+                        productosExcedentes[excedenteIndex].nombre = nombre;
+                    }
+                    
+                    inventario.forEach(item => {
+                        if (item.categoria === categoria && item.producto === nombreOriginal) {
+                            item.producto = nombre;
+                        }
+                    });
+                    localStorage.setItem('inventario_eb', JSON.stringify(inventario));
+                }
+                
+                if (esExcedente) {
+                    if (!productosExcedentes.some(p => p.categoria === categoria && p.nombre === nombre)) {
+                        productosExcedentes.push({ categoria, nombre });
+                    }
+                } else {
+                    productosExcedentes = productosExcedentes.filter(p => !(p.categoria === categoria && p.nombre === nombre));
+                }
+                
+                localStorage.setItem('productos_personalizados_eb', JSON.stringify(productosPersonalizados));
                 localStorage.setItem('productos_excedentes_eb', JSON.stringify(productosExcedentes));
+                
+                cerrarModalProducto();
+                renderizarGestionProductos();
+                renderizarAlertaExcedentes();
+                renderizarInventario();
+                mostrarToast('✓ Producto actualizado');
             }
+            else {
+                if (!productosPersonalizados[categoria]) {
+                    productosPersonalizados[categoria] = [];
+                }
+                
+                const todosLosProductos = obtenerProductosCategoria(categoria);
+                if (todosLosProductos.includes(nombre)) {
+                    alert('Este producto ya existe en la categoría');
+                    return;
+                }
+                
+                productosPersonalizados[categoria].push(nombre);
+                localStorage.setItem('productos_personalizados_eb', JSON.stringify(productosPersonalizados));
+                
+                if (esExcedente) {
+                    productosExcedentes.push({ categoria, nombre });
+                    localStorage.setItem('productos_excedentes_eb', JSON.stringify(productosExcedentes));
+                }
+                
+                cerrarModalProducto();
+                renderizarGestionProductos();
+                renderizarAlertaExcedentes();
+                actualizarFiltroProductosGestion();
+                mostrarToast('✓ Producto añadido');
+            }
+        }
+
+        // ============  EDITAR DONACIÓN ============
+        function abrirModalEditarDonacion(id) {
+            const donacion = inventario.find(i => i.id === id);
+            if (!donacion) return;
             
-            cerrarModalProducto();
-            renderizarGestionProductos();
-            renderizarGestionCategorias();
-            renderizarAlertaExcedentes();
-            actualizarFiltroProductosGestion();
-            mostrarToast('Producto añadido');
+            document.getElementById('editar-donacion-id').value = id;
+            document.getElementById('editar-donacion-producto').textContent = donacion.producto;
+            
+            const cat = obtenerCategoriaInfo(donacion.categoria);
+            document.getElementById('editar-donacion-categoria').textContent = `${cat.emoji} ${cat.nombre}`;
+            
+            document.getElementById('editar-donacion-cantidad').value = donacion.cantidad;
+            document.getElementById('editar-donacion-unidad').value = donacion.unidad;
+            document.getElementById('editar-donacion-donante').value = donacion.donante;
+            document.getElementById('editar-donacion-notas').value = donacion.notas || '';
+            
+            document.getElementById('modal-editar-donacion').classList.remove('hidden');
+        }
+
+        function cerrarModalEditarDonacion() {
+            document.getElementById('modal-editar-donacion').classList.add('hidden');
+        }
+
+        function guardarEdicionDonacion(event) {
+            event.preventDefault();
+            const id = parseInt(document.getElementById('editar-donacion-id').value);
+            const cantidad = parseInt(document.getElementById('editar-donacion-cantidad').value);
+            const unidad = document.getElementById('editar-donacion-unidad').value;
+            const donante = document.getElementById('editar-donacion-donante').value;
+            const notas = document.getElementById('editar-donacion-notas').value;
+            
+            const index = inventario.findIndex(i => i.id === id);
+            if (index >= 0) {
+                inventario[index].cantidad = cantidad;
+                inventario[index].unidad = unidad;
+                inventario[index].donante = donante;
+                inventario[index].notas = notas;
+                inventario[index].updated_at = new Date().toISOString();
+                
+                localStorage.setItem('inventario_eb', JSON.stringify(inventario));
+                
+                renderizarInventario();
+                actualizarEstadisticas();
+                renderizarDashboard();
+                cerrarModalEditarDonacion();
+                mostrarToast('✓ Donación actualizada');
+            }
         }
 
         // ============ RENDER TABLA INVENTARIO ============
@@ -806,13 +1019,31 @@
                         <td class="px-6 py-4 text-sm text-slate-700">${item.donante}</td>
                         <td class="px-6 py-4 text-sm text-slate-500">${fecha}</td>
                         <td class="px-6 py-4">
-                            <button onclick="eliminarDonacion(${item.id})" class="text-red-500 hover:text-red-700 hover:bg-red-50 p-1.5 rounded-lg transition" title="Eliminar">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                            </button>
+                            <div class="flex items-center gap-1">
+                                <button class="btn-editar-donacion text-blue-500 hover:text-blue-700 hover:bg-blue-50 p-1.5 rounded-lg transition" title="Editar" data-id="${item.id}">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                </button>
+                                <button class="btn-eliminar-donacion text-red-500 hover:text-red-700 hover:bg-red-50 p-1.5 rounded-lg transition" title="Eliminar" data-id="${item.id}">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                </button>
+                            </div>
                         </td>
                     </tr>
                 `;
             }).join('');
+            
+            // Event listeners para botones de editar y eliminar donaciones
+            tbody.querySelectorAll('.btn-editar-donacion').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    abrirModalEditarDonacion(parseInt(this.dataset.id));
+                });
+            });
+            
+            tbody.querySelectorAll('.btn-eliminar-donacion').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    eliminarDonacion(parseInt(this.dataset.id));
+                });
+            });
         }
 
         function actualizarEstadisticas() {
@@ -929,7 +1160,6 @@
                 return;
             }
             
-            // Parsear CSV (maneja comillas)
             const parsearLinea = (linea) => {
                 const resultado = [];
                 let actual = '';
@@ -967,7 +1197,6 @@
                 }
             }
             
-            // Validar según tipo
             const validacion = validarDatos(tipo, datos);
             
             if (validacion.errores.length > 0) {
@@ -986,146 +1215,145 @@
             mostrarPreviewImportacion();
         }
 
-        function validarDatos(tipo, datos) {
-            const errores = [];
-            const datosValidos = [];
-            const todasCategorias = { ...configCategorias, ...categoriasPersonalizadas };
-            
-            datos.forEach((fila, idx) => {
-                try {
-                    if (tipo === 'donaciones') {
-                        if (!fila.categoria || !fila.producto || !fila.cantidad || !fila.donante) {
-                            errores.push(`Línea ${idx + 2}: faltan campos obligatorios (categoria, producto, cantidad, donante)`);
-                            return;
-                        }
-                        
-                        // Normalizar categoría
-                        let categoriaKey = Object.keys(todasCategorias).find(k => 
-                            todasCategorias[k].nombre.toLowerCase() === fila.categoria.toLowerCase() ||
-                            k.toLowerCase() === fila.categoria.toLowerCase()
-                        );
-                        
-                        if (!categoriaKey) {
-                            errores.push(`Línea ${idx + 2}: categoría "${fila.categoria}" no existe`);
-                            return;
-                        }
-                        
-                        const cantidad = parseInt(fila.cantidad);
-                        if (isNaN(cantidad) || cantidad <= 0) {
-                            errores.push(`Línea ${idx + 2}: cantidad inválida "${fila.cantidad}"`);
-                            return;
-                        }
-                        
-                        datosValidos.push({
-                            id: Date.now() + idx,
-                            categoria: categoriaKey,
-                            producto: fila.producto,
-                            cantidad: cantidad,
-                            unidad: fila.unidad || 'unidades',
-                            donante: fila.donante,
-                            notas: fila.notas || '',
-                            fecha: fila.fecha ? new Date(fila.fecha).toISOString() : new Date().toISOString()
-                        });
+    function validarDatos(tipo, datos) {
+        const errores = [];
+        const datosValidos = [];
+        const todasCategorias = { ...configCategorias, ...categoriasPersonalizadas };
+        
+        datos.forEach((fila, idx) => {
+            try {
+                if (tipo === 'donaciones') {
+                    if (!fila.categoria || !fila.producto || !fila.cantidad || !fila.donante) {
+                        errores.push(`Línea ${idx + 2}: faltan campos obligatorios (categoria, producto, cantidad, donante)`);
+                        return;
                     }
-                    else if (tipo === 'solicitudes') {
-                        if (!fila.categoria || !fila.producto || !fila.cantidad_necesaria || !fila.centro_solicitante) {
-                            errores.push(`Línea ${idx + 2}: faltan campos obligatorios`);
-                            return;
-                        }
-                        
-                        let categoriaKey = Object.keys(todasCategorias).find(k => 
-                            todasCategorias[k].nombre.toLowerCase() === fila.categoria.toLowerCase() ||
-                            k.toLowerCase() === fila.categoria.toLowerCase()
-                        );
-                        
-                        if (!categoriaKey) {
-                            errores.push(`Línea ${idx + 2}: categoría "${fila.categoria}" no existe`);
-                            return;
-                        }
-                        
-                        const cantidad = parseInt(fila.cantidad_necesaria);
-                        if (isNaN(cantidad) || cantidad <= 0) {
-                            errores.push(`Línea ${idx + 2}: cantidad inválida`);
-                            return;
-                        }
-                        
-                        datosValidos.push({
-                            id: 'sol_' + Date.now() + idx,
-                            categoria: categoriaKey,
-                            producto_nombre: fila.producto,
-                            cantidad_necesaria: cantidad,
-                            cantidad_recibida: 0,
-                            unidad: fila.unidad || 'unidades',
-                            prioridad: fila.prioridad || 'media',
-                            centro_solicitante: fila.centro_solicitante,
-                            ubicacion: fila.ubicacion || '',
-                            contacto_nombre: fila.contacto_nombre || '',
-                            contacto_telefono: fila.contacto_telefono || '',
-                            contacto_email: fila.contacto_email || '',
-                            descripcion: fila.descripcion || '',
-                            estado: 'activa',
-                            fecha_solicitud: new Date().toISOString()
-                        });
+                    
+                    let categoriaKey = Object.keys(todasCategorias).find(k => 
+                        todasCategorias[k].nombre.toLowerCase() === fila.categoria.toLowerCase() ||
+                        k.toLowerCase() === fila.categoria.toLowerCase()
+                    );
+                    
+                    if (!categoriaKey) {
+                        errores.push(`Línea ${idx + 2}: categoría "${fila.categoria}" no existe`);
+                        return;
                     }
-                    else if (tipo === 'productos') {
-                        if (!fila.categoria || !fila.nombre) {
-                            errores.push(`Línea ${idx + 2}: faltan campos obligatorios (categoria, nombre)`);
-                            return;
-                        }
-                        
-                        let categoriaKey = Object.keys(todasCategorias).find(k => 
-                            todasCategorias[k].nombre.toLowerCase() === fila.categoria.toLowerCase() ||
-                            k.toLowerCase() === fila.categoria.toLowerCase()
-                        );
-                        
-                        if (!categoriaKey) {
-                            errores.push(`Línea ${idx + 2}: categoría "${fila.categoria}" no existe`);
-                            return;
-                        }
-                        
-                        if (!productosPersonalizados[categoriaKey]) {
-                            productosPersonalizados[categoriaKey] = [];
-                        }
-                        
-                        const todosProductos = obtenerProductosCategoria(categoriaKey);
-                        if (todosProductos.includes(fila.nombre)) {
-                            errores.push(`Línea ${idx + 2}: producto "${fila.nombre}" ya existe en ${fila.categoria}`);
-                            return;
-                        }
-                        
-                        datosValidos.push({
-                            categoria: categoriaKey,
-                            nombre: fila.nombre,
-                            es_excedente: fila.es_excedente?.toLowerCase() === 'true' || fila.es_excedente === '1'
-                        });
+                    
+                    const cantidad = parseInt(fila.cantidad);
+                    if (isNaN(cantidad) || cantidad <= 0) {
+                        errores.push(`Línea ${idx + 2}: cantidad inválida "${fila.cantidad}"`);
+                        return;
                     }
-                    else if (tipo === 'categorias') {
-                        if (!fila.nombre) {
-                            errores.push(`Línea ${idx + 2}: falta el nombre`);
-                            return;
-                        }
-                        
-                        const todasCats = { ...configCategorias, ...categoriasPersonalizadas };
-                        if (Object.values(todasCats).some(c => c.nombre.toLowerCase() === fila.nombre.toLowerCase())) {
-                            errores.push(`Línea ${idx + 2}: categoría "${fila.nombre}" ya existe`);
-                            return;
-                        }
-                        
-                        datosValidos.push({
-                            nombre: fila.nombre,
-                            emoji: fila.emoji || '📦',
-                            color: fila.color || 'purple'
-                        });
-                    }
-                } catch (err) {
-                    errores.push(`Línea ${idx + 2}: error inesperado - ${err.message}`);
+                    
+                    datosValidos.push({
+                        id: Date.now() + idx,
+                        categoria: categoriaKey,
+                        producto: fila.producto,
+                        cantidad: cantidad,
+                        unidad: fila.unidad || 'unidades',
+                        donante: fila.donante,
+                        notas: fila.notas || '',
+                        fecha: fila.fecha ? new Date(fila.fecha).toISOString() : new Date().toISOString()
+                    });
                 }
-            });
+                else if (tipo === 'solicitudes') {
+                    if (!fila.categoria || !fila.producto || !fila.cantidad_necesaria || !fila.centro_solicitante) {
+                        errores.push(`Línea ${idx + 2}: faltan campos obligatorios`);
+                        return;
+                    }
+                    
+                    let categoriaKey = Object.keys(todasCategorias).find(k => 
+                        todasCategorias[k].nombre.toLowerCase() === fila.categoria.toLowerCase() ||
+                        k.toLowerCase() === fila.categoria.toLowerCase()
+                    );
+                    
+                    if (!categoriaKey) {
+                        errores.push(`Línea ${idx + 2}: categoría "${fila.categoria}" no existe`);
+                        return;
+                    }
+                    
+                    const cantidad = parseInt(fila.cantidad_necesaria);
+                    if (isNaN(cantidad) || cantidad <= 0) {
+                        errores.push(`Línea ${idx + 2}: cantidad inválida`);
+                        return;
+                    }
+                    
+                    datosValidos.push({
+                        id: 'sol_' + Date.now() + idx,
+                        categoria: categoriaKey,
+                        producto_nombre: fila.producto,
+                        cantidad_necesaria: cantidad,
+                        cantidad_recibida: 0,
+                        unidad: fila.unidad || 'unidades',
+                        prioridad: fila.prioridad || 'media',
+                        centro_solicitante: fila.centro_solicitante,
+                        ubicacion: fila.ubicacion || '',
+                        contacto_nombre: fila.contacto_nombre || '',
+                        contacto_telefono: fila.contacto_telefono || '',
+                        contacto_email: fila.contacto_email || '',
+                        descripcion: fila.descripcion || '',
+                        estado: 'activa',
+                        fecha_solicitud: new Date().toISOString()
+                    });
+                }
+                else if (tipo === 'productos') {
+                    if (!fila.categoria || !fila.nombre) {
+                        errores.push(`Línea ${idx + 2}: faltan campos obligatorios (categoria, nombre)`);
+                        return;
+                    }
+                    
+                    let categoriaKey = Object.keys(todasCategorias).find(k => 
+                        todasCategorias[k].nombre.toLowerCase() === fila.categoria.toLowerCase() ||
+                        k.toLowerCase() === fila.categoria.toLowerCase()
+                    );
+                    
+                    if (!categoriaKey) {
+                        errores.push(`Línea ${idx + 2}: categoría "${fila.categoria}" no existe`);
+                        return;
+                    }
+                    
+                    if (!productosPersonalizados[categoriaKey]) {
+                        productosPersonalizados[categoriaKey] = [];
+                    }
+                    
+                    const todosProductos = obtenerProductosCategoria(categoriaKey);
+                    if (todosProductos.includes(fila.nombre)) {
+                        errores.push(`Línea ${idx + 2}: producto "${fila.nombre}" ya existe en ${fila.categoria}`);
+                        return;
+                    }
+                    
+                    datosValidos.push({
+                        categoria: categoriaKey,
+                        nombre: fila.nombre,
+                        es_excedente: fila.es_excedente?.toLowerCase() === 'true' || fila.es_excedente === '1' || fila.es_excedente === 'si'
+                    });
+                }
+                else if (tipo === 'categorias') {
+                    if (!fila.nombre) {
+                        errores.push(`Línea ${idx + 2}: falta el nombre`);
+                        return;
+                    }
+                    
+                    const todasCats = { ...configCategorias, ...categoriasPersonalizadas };
+                    if (Object.values(todasCats).some(c => c.nombre.toLowerCase() === fila.nombre.toLowerCase())) {
+                        errores.push(`Línea ${idx + 2}: categoría "${fila.nombre}" ya existe`);
+                        return;
+                    }
+                    
+                    datosValidos.push({
+                        nombre: fila.nombre,
+                        emoji: fila.emoji || '📦',
+                        color: fila.color || 'purple'
+                    });
+                }
+            } catch (err) {
+                errores.push(`Línea ${idx + 2}: error inesperado - ${err.message}`);
+            }
+        });
+        
+        return { datos: datosValidos, errores };
+    }
             
-            return { datos: datosValidos, errores };
-        }
-
-        function mostrarPreviewImportacion() {
+    function mostrarPreviewImportacion() {
             const preview = document.getElementById('preview-importacion');
             const headersRow = document.getElementById('preview-headers');
             const body = document.getElementById('preview-body');
@@ -1237,7 +1465,7 @@
         }
 
         // ============================================================
-        // 📤 SISTEMA DE EXPORTACIÓN CSV
+        //  SISTEMA DE EXPORTACIÓN CSV
         // ============================================================
 
         function exportarCSV(tipo) {
@@ -1318,36 +1546,35 @@
             mostrarToast(`✓ ${tipo} exportado(s)`);
         }
 
-        function descargarPlantilla(tipo) {
-            let csv = '';
-            let filename = '';
-            
-            if (tipo === 'donaciones') {
-                csv = 'fecha,categoria,producto,cantidad,unidad,donante,notas\n2024-01-15,Higiene,Shampoo,50,unidades,Farmacia La Salud,Donación mensual\n2024-01-16,Alimentos,Arroz,100,kilos,Molinos del Valle,Saco de 50kg';
-                filename = 'plantilla_donaciones.csv';
-            }
-            else if (tipo === 'solicitudes') {
-                csv = 'categoria,producto,cantidad_necesaria,unidad,prioridad,centro_solicitante,ubicacion,contacto_nombre,contacto_telefono,contacto_email,descripcion\nHigiene,Shampoo,100,unidades,alta,Centro Comunitario El Valle,Caracas,María Pérez,0412-1234567,maria@ejemplo.com,Urgente para familias\nAlimentos,Arroz,200,kilos,media,Escuela Bolivariana,Maracay,Juan López,0414-7654321,,Necesitamos para comedor';
-                filename = 'plantilla_solicitudes.csv';
-            }
-            else if (tipo === 'productos') {
-                csv = 'categoria,nombre,es_excedente\nHigiene,Peines,false\nHigiene,Desodorante,true\nAlimentos,Aceite,false\nFarmacia,Vendas,true';
-                filename = 'plantilla_productos.csv';
-            }
-            else if (tipo === 'categorias') {
-                csv = 'nombre,emoji,color\nÚtiles escolares,📚,amber\nJuguetes,🧸,pink\nMascotas,🐾,teal';
-                filename = 'plantilla_categorias.csv';
-            }
-            
-            const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = filename;
-            a.click();
-            mostrarToast(`✓ Plantilla descargada`);
+    function descargarPlantilla(tipo) {
+        let csv = '';
+        let filename = '';
+        
+        if (tipo === 'donaciones') {
+            csv = 'fecha,categoria,producto,cantidad,unidad,donante,notas\n2024-01-15,Higiene,Shampoo,50,unidades,Farmacia La Salud,Donación mensual\n2024-01-16,Alimentos,Arroz,100,kilos,Molinos del Valle,Saco de 50kg';
+            filename = 'plantilla_donaciones.csv';
         }
-
+        else if (tipo === 'solicitudes') {
+            csv = 'categoria,producto,cantidad_necesaria,unidad,prioridad,centro_solicitante,ubicacion,contacto_nombre,contacto_telefono,contacto_email,descripcion\nHigiene,Shampoo,100,unidades,alta,Centro Comunitario El Valle,Caracas,María Pérez,0412-1234567,maria@ejemplo.com,Urgente para familias\nAlimentos,Arroz,200,kilos,media,Escuela Bolivariana,Maracay,Juan López,0414-7654321,,Necesitamos para comedor';
+            filename = 'plantilla_solicitudes.csv';
+        }
+        else if (tipo === 'productos') {
+            csv = 'categoria,nombre,es_excedente\nHigiene,Peines,false\nHigiene,Desodorante,true\nAlimentos,Aceite,false\nFarmacia,Vendas,true\nRopa,Camisa / Blusa,false';
+            filename = 'plantilla_productos.csv';
+        }
+        else if (tipo === 'categorias') {
+            csv = 'nombre,emoji,color\nÚtiles escolares,📚,amber\nJuguetes,🧸,pink\nMascotas,🐾,teal';
+            filename = 'plantilla_categorias.csv';
+        }
+        
+        const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        mostrarToast(`✓ Plantilla descargada`);
+    }
         // ============ UTILIDADES ============
         function guardarConfiguracion() {
             localStorage.setItem('categorias_personalizadas_eb', JSON.stringify(categoriasPersonalizadas));
@@ -1366,6 +1593,9 @@
         });
         document.getElementById('modal-producto').addEventListener('click', (e) => {
             if (e.target.id === 'modal-producto') cerrarModalProducto();
+        });
+        document.getElementById('modal-editar-donacion').addEventListener('click', (e) => {
+            if (e.target.id === 'modal-editar-donacion') cerrarModalEditarDonacion();
         });
     </script>
 </body>
