@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Donaciones - Colegio Eduardo Blanco</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .fade-in { animation: fadeIn 0.3s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        .modal-backdrop { background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); }
+        .image-preview { max-height: 120px; object-fit: cover; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-40">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex items-center justify-between flex-wrap gap-3">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg">EB</div>
+                    <div>
+                        <h1 class="text-xl font-bold text-slate-900">Colegio Eduardo Blanco</h1>
+                        <p class="text-sm text-slate-500">Registro de Donaciones</p>
+                    </div>
+                </div>
+                <div class="flex gap-2 flex-wrap">
+                    <a href="solicitudes.html" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2.5 rounded-lg font-semibold shadow-md transition text-sm flex items-center gap-2">
+                        📋 Solicitudes
+                    </a>
+                    <a href="admin.html" class="bg-slate-700 hover:bg-slate-800 text-white px-4 py-2.5 rounded-lg font-semibold shadow-md transition text-sm flex items-center gap-2">
+                        🔐 Panel Admin
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main -->
+    <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- Resumen rápido -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-sm">
+                <p class="text-xs text-slate-500 mb-1">Higiene</p>
+                <p class="text-2xl font-bold text-blue-600" id="total-higiene">0</p>
+            </div>
+            <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-sm">
+                <p class="text-xs text-slate-500 mb-1">Alimentos</p>
+                <p class="text-2xl font-bold text-green-600" id="total-alimentos">0</p>
+            </div>
+            <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-sm">
+                <p class="text-xs text-slate-500 mb-1">Farmacia</p>
+                <p class="text-2xl font-bold text-red-600" id="total-farmacia">0</p>
+            </div>
+            <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-sm">
+                <p class="text-xs text-slate-500 mb-1">Ropa</p>
+                <p class="text-2xl font-bold text-purple-600" id="total-ropa">0</p>
+            </div>
+        </div>
+
+        <!-- Alerta de solicitudes actualizadas -->
+        <div id="alerta-solicitudes" class="hidden bg-green-50 border border-green-200 rounded-2xl p-5 mb-6 fade-in">
+            <div class="flex items-start gap-3">
+                <div class="text-2xl">🎉</div>
+                <div class="flex-1">
+                    <h3 class="font-bold text-green-900 mb-1">¡Solicitudes Actualizadas!</h3>
+                    <p class="text-sm text-green-800 mb-3">Tu donación ha ayudado a cubrir solicitudes de otros centros</p>
+                    <div id="lista-solicitudes-actualizadas" class="space-y-2"></div>
+                </div>
+                <button onclick="document.getElementById('alerta-solicitudes').classList.add('hidden')" class="text-green-600 hover:text-green-800">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Botón principal -->
+        <div class="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm text-center mb-6">
+            <div class="text-6xl mb-4"></div>
+            <h2 class="text-2xl font-bold text-slate-900 mb-2">Registrar Nueva Donación</h2>
+            <p class="text-slate-500 mb-6">Haz clic en el botón para añadir una donación al inventario</p>
+            <button onclick="abrirModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold shadow-md hover:shadow-lg transition flex items-center gap-2 mx-auto">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                Nueva Donación
+            </button>
+        </div>
+
+        <!-- Últimas donaciones -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="px-6 py-4 border-b border-slate-200">
+                <h2 class="font-bold text-slate-900 text-lg">🕐 Últimas Donaciones Registradas</h2>
+            </div>
+            <div id="ultimas-donaciones" class="divide-y divide-slate-100"></div>
+            <div id="estado-vacio" class="hidden py-12 text-center">
+                <div class="text-6xl mb-3"></div>
+                <p class="text-slate-500 font-medium">Aún no hay donaciones registradas</p>
+                <p class="text-sm text-slate-400 mt-1">Haz clic en "Nueva Donación" para comenzar</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- MODAL: Nueva Donación -->
+    <div id="modal" class="hidden fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto fade-in">
+            <div class="sticky top-0 bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between rounded-t-2xl z-10">
+                <div>
+                    <h3 class="font-bold text-lg text-slate-900">Registrar Nueva Donación</h3>
+                    <p class="text-sm text-slate-500">Selecciona categoría y producto para evitar duplicados</p>
+                </div>
+                <button onclick="cerrarModal()" class="text-slate-400 hover:text-slate-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+
+            <form id="formulario" onsubmit="guardarDonacion(event)" class="p-6 space-y-5">
+                
+                <!-- Categoría -->
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-2">1️⃣ Selecciona la categoría</label>
+                    <div id="contenedor-categorias" class="grid grid-cols-2 md:grid-cols-4 gap-3"></div>
+                </div>
+
+                <!-- Productos estándar -->
+                <div id="seccion-producto-estandar" class="hidden">
+                    <div class="flex items-center justify-between mb-2">
+                        <label class="block text-sm font-semibold text-slate-700">2️⃣ Selecciona el producto</label>
+                        <button type="button" onclick="abrirModalNuevoProducto()" class="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1">
+                            ➕ No encuentro el producto
+                        </button>
+                    </div>
+                    <select id="producto" name="producto" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white disabled:bg-slate-100" disabled>
+                        <option value="">Primero selecciona una categoría</option>
+                    </select>
+                </div>
+
+                <!-- Productos ROPA -->
+                <div id="seccion-ropa" class="hidden space-y-3">
+                    <label class="block text-sm font-semibold text-slate-700 mb-2">2️ Describe la prenda</label>
+                    <div>
+                        <label class="block text-xs text-slate-500 mb-1">Tipo de prenda</label>
+                        <select id="ropa-tipo" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white">
+                            <option value="">Selecciona...</option>
+                            <option>Camisa / Blusa</option>
+                            <option>Pantalón</option>
+                            <option>Vestido</option>
+                            <option>Chaqueta / Abrigo</option>
+                            <option>Suéter / Jersey</option>
+                            <option>Zapatos</option>
+                            <option>Zapatillas</option>
+                            <option>Ropa interior</option>
+                            <option>Pijama</option>
+                            <option>Uniforme escolar</option>
+                            <option>Otro</option>
+                        </select>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs text-slate-500 mb-1">Sexo</label>
+                            <select id="ropa-sexo" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white">
+                                <option value="">Selecciona...</option>
+                                <option>Masculino</option>
+                                <option>Femenino</option>
+                                <option>Unisex</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs text-slate-500 mb-1">Edad</label>
+                            <select id="ropa-edad" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white">
+                                <option value="">Selecciona...</option>
+                                <option>Bebé (0-2 años)</option>
+                                <option>Niño (3-12 años)</option>
+                                <option>Adolescente (13-17)</option>
+                                <option>Adulto</option>
+                                <option>Adulto mayor</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-500 mb-1">Talla</label>
+                        <select id="ropa-talla" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white">
+                            <option value="">Selecciona...</option>
+                            <option>RN (Recién nacido)</option>
+                            <option>0-6 meses</option>
+                            <option>6-12 meses</option>
+                            <option>1-2 años</option>
+                            <option>2-4 años</option>
+                            <option>4-6 años</option>
+                            <option>6-8 años</option>
+                            <option>8-10 años</option>
+                            <option>10-12 años</option>
+                            <option>XS</option>
+                            <option>S</option>
+                            <option>M</option>
+                            <option>L</option>
+                            <option>XL</option>
+                            <option>XXL</option>
+                            <option>XXXL</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Cantidad -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-2">3️⃣ Cantidad</label>
+                        <input type="number" name="cantidad" min="1" required class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Ej: 50">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-2">Unidad</label>
+                        <select name="unidad" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white">
+                            <option value="unidades">Unidades</option>
+                            <option value="cajas">Cajas</option>
+                            <option value="paquetes">Paquetes</option>
+                            <option value="litros">Litros</option>
+                            <option value="kilos">Kilos</option>
+                            <option value="bolsas">Bolsas</option>
+                            <option value="pares">Pares</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Donante -->
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-2">4️⃣ Donante</label>
+                    <input type="text" name="donante" required class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Nombre de la persona o institución">
+                </div>
+
+                <!-- Imagen -->
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-2">5️ Imagen del producto (opcional)</label>
+                    <div class="border-2 border-dashed border-slate-300 rounded-xl p-6 text-center hover:border-blue-500 transition cursor-pointer" onclick="document.getElementById('imagen').click()">
+                        <input type="file" id="imagen" accept="image/*" onchange="previewImagen(event)" class="hidden">
+                        <div id="preview-contenedor">
+                            <svg class="w-10 h-10 text-slate-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                            <p class="text-sm text-slate-500">Haz clic para subir una imagen</p>
+                            <p class="text-xs text-slate-400 mt-1">JPG, PNG (máx. 5MB)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notas -->
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-2">Notas adicionales (opcional)</label>
+                    <textarea name="notas" rows="2" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none resize-none" placeholder="Observaciones sobre la donación..."></textarea>
+                </div>
+
+                <!-- Botones -->
+                <div class="flex gap-3 pt-4 border-t border-slate-200">
+                    <button type="button" onclick="cerrarModal()" class="flex-1 px-4 py-2.5 border border-slate-300 rounded-lg font-semibold text-slate-700 hover:bg-slate-50 transition">Cancelar</button>
+                    <button type="submit" class="flex-1 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold shadow-md transition">Guardar Donación</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: Nuevo Producto -->
+    <div id="modal-producto" class="hidden fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full fade-in">
+            <div class="border-b border-slate-200 px-6 py-4 flex items-center justify-between">
+                <h3 class="font-bold text-lg text-slate-900">Añadir Nuevo Producto</h3>
+                <button onclick="cerrarModalProducto()" class="text-slate-400 hover:text-slate-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+            <form onsubmit="guardarNuevoProducto(event)" class="p-6 space-y-4">
+                <p class="text-sm text-slate-600">Añadiendo a: <span id="cat-actual-producto" class="font-semibold"></span></p>
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-2">Nombre del producto</label>
+                    <input type="text" id="nuevo-producto-nombre" required class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Ej: Cuadernos" autocomplete="off">
+                </div>
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 text-xs text-blue-700">
+                    💡 Este producto se añadirá a la lista y estará disponible para futuras donaciones.
+                </div>
+                <div class="flex gap-3 pt-2">
+                    <button type="button" onclick="cerrarModalProducto()" class="flex-1 px-4 py-2.5 border border-slate-300 rounded-lg font-semibold text-slate-700 hover:bg-slate-50 transition">Cancelar</button>
+                    <button type="submit" class="flex-1 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold shadow-md transition">Añadir y Continuar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="hidden fixed bottom-6 right-6 bg-green-600 text-white px-5 py-3 rounded-lg shadow-lg z-50 fade-in flex items-center gap-2">
+        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+        <span id="toast-mensaje">Donación registrada</span>
+    </div>
+
+    <script>
+        // ============ CONFIGURACIÓN DE CATEGORÍAS ============
+        const productosPorCategoria = {
+            higiene: ['Shampoo', 'Perfumes', 'Cepillos de dientes', 'Crema dental', 'Toallas sanitarias', 'Toallitas húmedas', 'Jabón en barra', 'Toallas sanitarias post parto', 'Papel toilet'],
+            alimentos: ['Compotas', 'Pasta', 'Arroz', 'Atún en lata', 'Harina de trigo', 'Leche en polvo', 'Fórmula láctea', 'Enlatados', 'Agua'],
+            farmacia: ['Alcohol', 'Pastillas', 'Solución yodada', 'Batas de pacientes', 'Mascarillas', 'Guantes', 'Gorros', 'Jeringas', 'Yelcos']
+        };
+
+        const configCategorias = {
+            higiene:   { nombre: 'Higiene',   emoji: '🧴', color: 'blue' },
+            alimentos: { nombre: 'Alimentos', emoji: '🍚', color: 'green' },
+            farmacia:  { nombre: 'Farmacia',  emoji: '💊', color: 'red' },
+            ropa:      { nombre: 'Ropa',      emoji: '👕', color: 'purple' }
+        };
+
+        const estilosColor = {
+            blue:   { bg: 'bg-blue-100',   text: 'text-blue-700',   border: 'border-blue-600',   check: 'peer-checked:bg-blue-50' },
+            green:  { bg: 'bg-green-100',  text: 'text-green-700',  border: 'border-green-600',  check: 'peer-checked:bg-green-50' },
+            red:    { bg: 'bg-red-100',    text: 'text-red-700',    border: 'border-red-600',    check: 'peer-checked:bg-red-50' },
+            purple: { bg: 'bg-purple-100', text: 'text-purple-700', border: 'border-purple-600', check: 'peer-checked:bg-purple-50' },
+            amber:  { bg: 'bg-amber-100',  text: 'text-amber-700',  border: 'border-amber-600',  check: 'peer-checked:bg-amber-50' },
+            pink:   { bg: 'bg-pink-100',   text: 'text-pink-700',   border: 'border-pink-600',   check: 'peer-checked:bg-pink-50' },
+            teal:   { bg: 'bg-teal-100',   text: 'text-teal-700',   border: 'border-teal-600',   check: 'peer-checked:bg-teal-50' },
+            indigo: { bg: 'bg-indigo-100', text: 'text-indigo-700', border: 'border-indigo-600', check: 'peer-checked:bg-indigo-50' }
+        };
+
+        // ============ ESTADO ============
+        let inventario = JSON.parse(localStorage.getItem('inventario_eb') || '[]');
+        let categoriasPersonalizadas = JSON.parse(localStorage.getItem('categorias_personalizadas_eb') || '{}');
+        let productosPersonalizados = JSON.parse(localStorage.getItem('productos_personalizados_eb') || '{}');
+        let imagenBase64 = null;
+        let categoriaSeleccionada = null;
+
+        // ============ INICIALIZACIÓN ============
+        document.addEventListener('DOMContentLoaded', () => {
+            actualizarEstadisticas();
+            renderizarUltimasDonaciones();
+        });
+
+        // ============ OBTENER PRODUCTOS ============
+        function obtenerProductosCategoria(key) {
+            const base = productosPorCategoria[key] || [];
+            const personalizados = productosPersonalizados[key] || [];
+            return [...base, ...personalizados];
+        }
+
+        // ============ ESTADÍSTICAS ============
+        function actualizarEstadisticas() {
+            const totales = { higiene: 0, alimentos: 0, farmacia: 0, ropa: 0 };
+            inventario.forEach(item => { 
+                if (totales[item.categoria] !== undefined) {
+                    totales[item.categoria] += item.cantidad; 
+                }
+            });
+            document.getElementById('total-higiene').textContent = totales.higiene.toLocaleString('es-ES');
+            document.getElementById('total-alimentos').textContent = totales.alimentos.toLocaleString('es-ES');
+            document.getElementById('total-farmacia').textContent = totales.farmacia.toLocaleString('es-ES');
+            document.getElementById('total-ropa').textContent = totales.ropa.toLocaleString('es-ES');
+        }
+
+        // ============ ÚLTIMAS DONACIONES ============
+        function renderizarUltimasDonaciones() {
+            const contenedor = document.getElementById('ultimas-donaciones');
+            const estadoVacio = document.getElementById('estado-vacio');
+            const ultimas = inventario.slice(-5).reverse();
+
+            if (ultimas.length === 0) {
+                contenedor.innerHTML = '';
+                estadoVacio.classList.remove('hidden');
+                return;
+            }
+
+            estadoVacio.classList.add('hidden');
+            const todasCategorias = { ...configCategorias, ...categoriasPersonalizadas };
+
+            contenedor.innerHTML = ultimas.map(item => {
+                const cat = todasCategorias[item.categoria] || { nombre: item.categoria, emoji: '📦', color: 'slate' };
+                const estilo = estilosColor[cat.color] || estilosColor.blue;
+                const fecha = new Date(item.fecha).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
+                
+                return `
+                    <div class="px-6 py-4 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 ${estilo.bg} rounded-lg flex items-center justify-center text-lg">${cat.emoji}</div>
+                            <div>
+                                <p class="font-semibold text-slate-900">${item.producto}</p>
+                                <p class="text-xs text-slate-500">${cat.nombre} · ${item.donante}</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-bold text-slate-900">${item.cantidad} ${item.unidad}</p>
+                            <p class="text-xs text-slate-500">${fecha}</p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ============ MODAL DONACIÓN ============
+        function abrirModal() {
+            document.getElementById('modal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            renderizarCategoriasEnModal();
+        }
+
+        function cerrarModal() {
+            document.getElementById('modal').classList.add('hidden');
+            document.body.style.overflow = '';
+            document.getElementById('formulario').reset();
+            document.getElementById('producto').disabled = true;
+            document.getElementById('seccion-producto-estandar').classList.add('hidden');
+            document.getElementById('seccion-ropa').classList.add('hidden');
+            document.getElementById('preview-contenedor').innerHTML = `
+                <svg class="w-10 h-10 text-slate-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                <p class="text-sm text-slate-500">Haz clic para subir una imagen</p>
+                <p class="text-xs text-slate-400 mt-1">JPG, PNG (máx. 5MB)</p>
+            `;
+            imagenBase64 = null;
+            categoriaSeleccionada = null;
+        }
+
+        function renderizarCategoriasEnModal() {
+            const contenedor = document.getElementById('contenedor-categorias');
+            const todasCategorias = { ...configCategorias, ...categoriasPersonalizadas };
+            
+            contenedor.innerHTML = Object.entries(todasCategorias).map(([key, cat]) => {
+                const estilo = estilosColor[cat.color] || estilosColor.blue;
+                const icono = cat.emoji || '📦';
+                return `
+                    <label class="cursor-pointer">
+                        <input type="radio" name="categoria" value="${key}" onchange="seleccionarCategoria('${key}')" class="hidden peer" required>
+                        <div class="border-2 border-slate-200 rounded-xl p-3 text-center peer-checked:${estilo.border} ${estilo.check} hover:border-slate-300 transition">
+                            <div class="text-2xl mb-1">${icono}</div>
+                            <div class="text-xs font-semibold text-slate-700">${cat.nombre}</div>
+                        </div>
+                    </label>
+                `;
+            }).join('');
+        }
+
+        function seleccionarCategoria(key) {
+            categoriaSeleccionada = key;
+            document.getElementById('seccion-producto-estandar').classList.add('hidden');
+            document.getElementById('seccion-ropa').classList.add('hidden');
+
+            if (key === 'ropa') {
+                document.getElementById('seccion-ropa').classList.remove('hidden');
+            } else {
+                document.getElementById('seccion-producto-estandar').classList.remove('hidden');
+                const select = document.getElementById('producto');
+                select.disabled = false;
+                
+                const productos = obtenerProductosCategoria(key);
+                const personalizados = productosPersonalizados[key] || [];
+                
+                select.innerHTML = '<option value="">Selecciona un producto</option>';
+                productos.forEach(p => {
+                    const esPersonalizado = personalizados.includes(p);
+                    const marca = esPersonalizado ? ' ✨' : '';
+                    select.innerHTML += `<option value="${p}">${p}${marca}</option>`;
+                });
+            }
+        }
+
+        // ============ NUEVO PRODUCTO ============
+        function abrirModalNuevoProducto() {
+            if (!categoriaSeleccionada) {
+                alert('Primero selecciona una categoría');
+                return;
+            }
+            const todasCategorias = { ...configCategorias, ...categoriasPersonalizadas };
+            const cat = todasCategorias[categoriaSeleccionada];
+            document.getElementById('cat-actual-producto').textContent = `${cat.emoji} ${cat.nombre}`;
+            document.getElementById('nuevo-producto-nombre').value = '';
+            document.getElementById('modal-producto').classList.remove('hidden');
+            setTimeout(() => document.getElementById('nuevo-producto-nombre').focus(), 100);
+        }
+        
+        function cerrarModalProducto() {
+            document.getElementById('modal-producto').classList.add('hidden');
+            document.getElementById('nuevo-producto-nombre').value = '';
+        }
+
+        function guardarNuevoProducto(event) {
+            event.preventDefault();
+            const nombre = document.getElementById('nuevo-producto-nombre').value.trim();
+            
+            if (!categoriaSeleccionada) return;
+            
+            const todosLosProductos = obtenerProductosCategoria(categoriaSeleccionada);
+            if (todosLosProductos.includes(nombre)) {
+                alert(`⚠️ El producto "${nombre}" ya existe en esta categoría`);
+                return;
+            }
+            
+            if (!productosPersonalizados[categoriaSeleccionada]) {
+                productosPersonalizados[categoriaSeleccionada] = [];
+            }
+            
+            productosPersonalizados[categoriaSeleccionada].push(nombre);
+            localStorage.setItem('productos_personalizados_eb', JSON.stringify(productosPersonalizados));
+            
+            const select = document.getElementById('producto');
+            select.innerHTML = '<option value="">Selecciona un producto</option>';
+            const productos = obtenerProductosCategoria(categoriaSeleccionada);
+            const personalizados = productosPersonalizados[categoriaSeleccionada] || [];
+            
+            productos.forEach(p => {
+                const esPersonalizado = personalizados.includes(p);
+                const marca = esPersonalizado ? ' ✨' : '';
+                select.innerHTML += `<option value="${p}">${p}${marca}</option>`;
+            });
+            select.value = nombre;
+            
+            cerrarModalProducto();
+            mostrarToast(`✓ Producto "${nombre}" añadido`);
+        }
+
+        // ============ GUARDAR DONACIÓN ============
+        function guardarDonacion(event) {
+            event.preventDefault();
+            const form = event.target;
+            const data = new FormData(form);
+            
+            let productoFinal = '';
+            let detalles = null;
+
+            if (categoriaSeleccionada === 'ropa') {
+                const tipo = document.getElementById('ropa-tipo').value;
+                const sexo = document.getElementById('ropa-sexo').value;
+                const edad = document.getElementById('ropa-edad').value;
+                const talla = document.getElementById('ropa-talla').value;
+                
+                if (!tipo || !sexo || !edad || !talla) {
+                    alert('Por favor completa todos los campos de la prenda');
+                    return;
+                }
+                productoFinal = `${tipo} | ${sexo} | ${edad} | Talla ${talla}`;
+                detalles = { tipo, sexo, edad, talla };
+            } else {
+                productoFinal = data.get('producto');
+                if (!productoFinal) { 
+                    alert('Selecciona un producto'); 
+                    return; 
+                }
+            }
+
+            const donacion = {
+                id: Date.now(),
+                categoria: categoriaSeleccionada,
+                producto: productoFinal,
+                detalles: detalles,
+                cantidad: parseInt(data.get('cantidad')),
+                unidad: data.get('unidad'),
+                donante: data.get('donante'),
+                notas: data.get('notas'),
+                imagen: imagenBase64,
+                fecha: new Date().toISOString()
+            };
+
+            inventario.push(donacion);
+            localStorage.setItem('inventario_eb', JSON.stringify(inventario));
+            
+            //  AUTOMATIZACIÓN: Actualizar solicitudes relacionadas
+            const solicitudesActualizadas = actualizarSolicitudesAutomaticas(donacion);
+            
+            actualizarEstadisticas();
+            renderizarUltimasDonaciones();
+            cerrarModal();
+            
+            // Mostrar alerta de solicitudes actualizadas
+            if (solicitudesActualizadas.length > 0) {
+                mostrarAlertaSolicitudes(solicitudesActualizadas);
+                mostrarToast(`✓ Donación registrada. ${solicitudesActualizadas.length} solicitud(es) actualizada(s)`);
+            } else {
+                mostrarToast('✓ Donación registrada exitosamente');
+            }
+        }
+
+        //  FUNCIÓN: Actualizar solicitudes automáticamente
+        function actualizarSolicitudesAutomaticas(donacion) {
+            const solicitudes = JSON.parse(localStorage.getItem('solicitudes_eb') || '[]');
+            const solicitudesActualizadas = [];
+            
+            solicitudes.forEach(solicitud => {
+                // Solo procesar solicitudes activas o parcialmente cubiertas
+                if (solicitud.estado !== 'activa' && solicitud.estado !== 'parcialmente_cubierta') {
+                    return;
+                }
+                
+                // Verificar si coincide la categoría y producto
+                const coincideCategoria = solicitud.categoria === donacion.categoria;
+                const coincideProducto = solicitud.producto_nombre === donacion.producto || 
+                                         solicitud.producto_nombre === donacion.categoria;
+                
+                if (coincideCategoria && coincideProducto) {
+                    const cantidadAnterior = solicitud.cantidad_recibida;
+                    
+                    // Actualizar cantidad recibida (sin exceder la necesaria)
+                    const nuevaCantidad = Math.min(
+                        solicitud.cantidad_recibida + donacion.cantidad,
+                        solicitud.cantidad_necesaria
+                    );
+                    solicitud.cantidad_recibida = nuevaCantidad;
+                    
+                    // Calcular porcentaje
+                    const porcentaje = (solicitud.cantidad_recibida / solicitud.cantidad_necesaria) * 100;
+                    
+                    // Actualizar estado
+                    const estadoAnterior = solicitud.estado;
+                    if (porcentaje >= 100) {
+                        solicitud.estado = 'resuelta';
+                    } else if (solicitud.cantidad_recibida > 0) {
+                        solicitud.estado = 'parcialmente_cubierta';
+                    }
+                    
+                    solicitud.updated_at = new Date().toISOString();
+                    
+                    solicitudesActualizadas.push({
+                        nombre: solicitud.producto_nombre,
+                        centro: solicitud.centro_solicitante,
+                        estadoAnterior: estadoAnterior,
+                        estadoNuevo: solicitud.estado,
+                        porcentaje: Math.round(porcentaje)
+                    });
+                }
+            });
+            
+            // Guardar cambios
+            if (solicitudesActualizadas.length > 0) {
+                localStorage.setItem('solicitudes_eb', JSON.stringify(solicitudes));
+                console.log(`✓ ${solicitudesActualizadas.length} solicitud(es) actualizada(s) automáticamente`);
+            }
+            
+            return solicitudesActualizadas;
+        }
+
+        // 🆕 FUNCIÓN: Mostrar alerta de solicitudes actualizadas
+        function mostrarAlertaSolicitudes(solicitudes) {
+            const alerta = document.getElementById('alerta-solicitudes');
+            const lista = document.getElementById('lista-solicitudes-actualizadas');
+            
+            lista.innerHTML = solicitudes.map(s => {
+                const icono = s.estadoNuevo === 'resuelta' ? '✅' : '📊';
+                const color = s.estadoNuevo === 'resuelta' ? 'text-green-700' : 'text-amber-700';
+                return `
+                    <div class="flex items-center gap-2 bg-white p-3 rounded-lg">
+                        <span class="text-xl">${icono}</span>
+                        <div class="flex-1">
+                            <p class="font-semibold text-sm text-slate-900">${s.nombre}</p>
+                            <p class="text-xs text-slate-500">${s.centro}</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-bold text-sm ${color}">${s.porcentaje}%</p>
+                            <p class="text-xs text-slate-500">${s.estadoNuevo === 'resuelta' ? 'Completada' : 'Parcial'}</p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            alerta.classList.remove('hidden');
+            
+            // Auto-ocultar después de 10 segundos
+            setTimeout(() => {
+                alerta.classList.add('hidden');
+            }, 10000);
+        }
+
+        // ============ IMAGEN ============
+        function previewImagen(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            if (file.size > 5 * 1024 * 1024) {
+                alert('La imagen no debe superar 5MB');
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                imagenBase64 = e.target.result;
+                document.getElementById('preview-contenedor').innerHTML = `
+                    <img src="${imagenBase64}" class="image-preview mx-auto rounded-lg shadow-sm">
+                    <p class="text-xs text-green-600 mt-2 font-medium">✓ Imagen cargada</p>
+                `;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // ============ UTILIDADES ============
+        function guardarConfiguracion() {
+            localStorage.setItem('categorias_personalizadas_eb', JSON.stringify(categoriasPersonalizadas));
+            localStorage.setItem('productos_personalizados_eb', JSON.stringify(productosPersonalizados));
+        }
+
+        function mostrarToast(mensaje) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-mensaje').textContent = mensaje;
+            toast.classList.remove('hidden');
+            setTimeout(() => toast.classList.add('hidden'), 3000);
+        }
+
+        document.getElementById('modal').addEventListener('click', (e) => {
+            if (e.target.id === 'modal') cerrarModal();
+        });
+        document.getElementById('modal-producto').addEventListener('click', (e) => {
+            if (e.target.id === 'modal-producto') cerrarModalProducto();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventario de Donaciones - Colegio Eduardo Blanco</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .fade-in { animation: fadeIn 0.3s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        .modal-backdrop { background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); }
+        .category-card { transition: all 0.3s ease; }
+        .category-card:hover { transform: translateY(-4px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .image-preview { max-height: 120px; object-fit: cover; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex items-center justify-between flex-wrap gap-3">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg">EB</div>
+                    <div>
+                        <h1 class="text-xl font-bold text-slate-900">Colegio Eduardo Blanco</h1>
+                        <p class="text-sm text-slate-500">Sistema de Inventario de Donaciones</p>
+                    </div>
+                </div>
+                <div class="flex gap-2 flex-wrap">
+                    <button onclick="cargarDatosEjemplo()" class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2.5 rounded-lg font-semibold shadow-md transition text-sm flex items-center gap-2">
+                        📋 Datos de ejemplo
+                    </button>
+                    <button onclick="abrirModalNuevaCategoria()" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2.5 rounded-lg font-semibold shadow-md transition text-sm flex items-center gap-2">
+                         Nueva categoría
+                    </button>
+                    <button onclick="abrirModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg font-semibold shadow-md hover:shadow-lg transition flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                        Nueva Donación
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- Dashboard -->
+        <div id="dashboard-categorias" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"></div>
+
+        <!-- Búsqueda y filtros -->
+        <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm mb-6">
+            <div class="flex flex-col md:flex-row gap-3">
+                <div class="flex-1 relative">
+                    <svg class="w-5 h-5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                    <input type="text" id="busqueda" oninput="filtrarInventario()" placeholder="Buscar productos, donantes..." class="w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none">
+                </div>
+                <select id="filtro-categoria" onchange="actualizarFiltroProductos(); filtrarInventario()" class="px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white">
+                    <option value="">Todas las categorías</option>
+                </select>
+                <select id="filtro-producto" onchange="filtrarInventario()" class="px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white">
+                    <option value="">Todos los productos</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Tabla -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between flex-wrap gap-2">
+                <h2 class="font-bold text-slate-900 text-lg">📦 Inventario Registrado</h2>
+                <div class="flex items-center gap-3">
+                    <span class="text-sm text-slate-500" id="contador-registros">0 registros</span>
+                    <button onclick="exportarCSV()" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg font-medium transition"> Exportar CSV</button>
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead class="bg-slate-50 text-slate-600 text-xs uppercase">
+                        <tr>
+                            <th class="px-6 py-3 text-left font-semibold">Producto</th>
+                            <th class="px-6 py-3 text-left font-semibold">Categoría</th>
+                            <th class="px-6 py-3 text-left font-semibold">Cantidad</th>
+                            <th class="px-6 py-3 text-left font-semibold">Donante</th>
+                            <th class="px-6 py-3 text-left font-semibold">Fecha</th>
+                            <th class="px-6 py-3 text-left font-semibold">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-inventario" class="divide-y divide-slate-100"></tbody>
+                </table>
+            </div>
+            <div id="estado-vacio" class="hidden py-12 text-center">
+                <div class="text-6xl mb-3"></div>
+                <p class="text-slate-500 font-medium">Aún no hay donaciones registradas</p>
+                <p class="text-sm text-slate-400 mt-1">Haz clic en "Nueva Donación" o "Datos de ejemplo" para comenzar</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- MODAL: Nueva Donación -->
+    <div id="modal" class="hidden fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto fade-in">
+            <div class="sticky top-0 bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between rounded-t-2xl z-10">
+                <div>
+                    <h3 class="font-bold text-lg text-slate-900">Registrar Nueva Donación</h3>
+                    <p class="text-sm text-slate-500">Selecciona categoría y producto para evitar duplicados</p>
+                </div>
+                <button onclick="cerrarModal()" class="text-slate-400 hover:text-slate-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+
+            <form id="formulario" onsubmit="guardarDonacion(event)" class="p-6 space-y-5">
+                
+                <!-- Categoría -->
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-2">1️⃣ Selecciona la categoría</label>
+                    <div id="contenedor-categorias" class="grid grid-cols-2 md:grid-cols-4 gap-3"></div>
+                </div>
+
+                <!-- Productos estándar -->
+                <div id="seccion-producto-estandar" class="hidden">
+                    <div class="flex items-center justify-between mb-2">
+                        <label class="block text-sm font-semibold text-slate-700">2️⃣ Selecciona el producto</label>
+                        <button type="button" onclick="abrirModalNuevoProducto()" class="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1">
+                            ➕ Añadir producto
+                        </button>
+                    </div>
+                    <select id="producto" name="producto" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white disabled:bg-slate-100" disabled>
+                        <option value="">Primero selecciona una categoría</option>
+                    </select>
+                </div>
+
+                <!-- Productos ROPA -->
+                <div id="seccion-ropa" class="hidden space-y-3">
+                    <label class="block text-sm font-semibold text-slate-700 mb-2">2️⃣ Describe la prenda</label>
+                    <div>
+                        <label class="block text-xs text-slate-500 mb-1">Tipo de prenda</label>
+                        <select id="ropa-tipo" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white">
+                            <option value="">Selecciona...</option>
+                            <option>Camisa / Blusa</option>
+                            <option>Pantalón</option>
+                            <option>Vestido</option>
+                            <option>Chaqueta / Abrigo</option>
+                            <option>Suéter / Jersey</option>
+                            <option>Zapatos</option>
+                            <option>Zapatillas</option>
+                            <option>Ropa interior</option>
+                            <option>Pijama</option>
+                            <option>Uniforme escolar</option>
+                            <option>Otro</option>
+                        </select>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs text-slate-500 mb-1">Sexo</label>
+                            <select id="ropa-sexo" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white">
+                                <option value="">Selecciona...</option>
+                                <option>Masculino</option>
+                                <option>Femenino</option>
+                                <option>Unisex</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs text-slate-500 mb-1">Edad</label>
+                            <select id="ropa-edad" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white">
+                                <option value="">Selecciona...</option>
+                                <option>Bebé (0-2 años)</option>
+                                <option>Niño (3-12 años)</option>
+                                <option>Adolescente (13-17)</option>
+                                <option>Adulto</option>
+                                <option>Adulto mayor</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-500 mb-1">Talla</label>
+                        <select id="ropa-talla" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white">
+                            <option value="">Selecciona...</option>
+                            <option>RN (Recién nacido)</option>
+                            <option>0-6 meses</option>
+                            <option>6-12 meses</option>
+                            <option>1-2 años</option>
+                            <option>2-4 años</option>
+                            <option>4-6 años</option>
+                            <option>6-8 años</option>
+                            <option>8-10 años</option>
+                            <option>10-12 años</option>
+                            <option>XS</option>
+                            <option>S</option>
+                            <option>M</option>
+                            <option>L</option>
+                            <option>XL</option>
+                            <option>XXL</option>
+                            <option>XXXL</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Cantidad -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-2">3️⃣ Cantidad</label>
+                        <input type="number" name="cantidad" min="1" required class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Ej: 50">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-2">Unidad</label>
+                        <select name="unidad" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white">
+                            <option value="unidades">Unidades</option>
+                            <option value="cajas">Cajas</option>
+                            <option value="paquetes">Paquetes</option>
+                            <option value="litros">Litros</option>
+                            <option value="kilos">Kilos</option>
+                            <option value="bolsas">Bolsas</option>
+                            <option value="pares">Pares</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Donante -->
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-2">4️⃣ Donante</label>
+                    <input type="text" name="donante" required class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Nombre de la persona o institución">
+                </div>
+
+                <!-- Imagen -->
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-2">5️⃣ Imagen del producto (opcional)</label>
+                    <div class="border-2 border-dashed border-slate-300 rounded-xl p-6 text-center hover:border-blue-500 transition cursor-pointer" onclick="document.getElementById('imagen').click()">
+                        <input type="file" id="imagen" accept="image/*" onchange="previewImagen(event)" class="hidden">
+                        <div id="preview-contenedor">
+                            <svg class="w-10 h-10 text-slate-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                            <p class="text-sm text-slate-500">Haz clic para subir una imagen</p>
+                            <p class="text-xs text-slate-400 mt-1">JPG, PNG (máx. 5MB)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notas -->
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-2">Notas adicionales (opcional)</label>
+                    <textarea name="notas" rows="2" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none resize-none" placeholder="Observaciones sobre la donación..."></textarea>
+                </div>
+
+                <!-- Botones -->
+                <div class="flex gap-3 pt-4 border-t border-slate-200">
+                    <button type="button" onclick="cerrarModal()" class="flex-1 px-4 py-2.5 border border-slate-300 rounded-lg font-semibold text-slate-700 hover:bg-slate-50 transition">Cancelar</button>
+                    <button type="submit" class="flex-1 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold shadow-md transition">Guardar Donación</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: Nueva Categoría -->
+    <div id="modal-categoria" class="hidden fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full fade-in">
+            <div class="border-b border-slate-200 px-6 py-4 flex items-center justify-between">
+                <h3 class="font-bold text-lg text-slate-900">Crear Nueva Categoría</h3>
+                <button onclick="cerrarModalCategoria()" class="text-slate-400 hover:text-slate-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+            <form onsubmit="guardarNuevaCategoria(event)" class="p-6 space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-2">Nombre de la categoría</label>
+                    <input type="text" id="nueva-cat-nombre" required class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Ej: Útiles escolares">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-2">Emoji / Ícono</label>
+                    <input type="text" id="nueva-cat-emoji" required maxlength="2" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-2xl" placeholder="" value="📦">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-2">Color</label>
+                    <div class="grid grid-cols-6 gap-2" id="selector-color"></div>
+                    <input type="hidden" id="nueva-cat-color" value="purple">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-2">Primer producto (opcional)</label>
+                    <input type="text" id="nueva-cat-producto" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Ej: Cuadernos">
+                    <p class="text-xs text-slate-400 mt-1">Puedes añadir más productos después</p>
+                </div>
+                <div class="flex gap-3 pt-2">
+                    <button type="button" onclick="cerrarModalCategoria()" class="flex-1 px-4 py-2.5 border border-slate-300 rounded-lg font-semibold text-slate-700 hover:bg-slate-50 transition">Cancelar</button>
+                    <button type="submit" class="flex-1 px-4 py-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold shadow-md transition">Crear</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: Nuevo Producto -->
+    <div id="modal-producto" class="hidden fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full fade-in">
+            <div class="border-b border-slate-200 px-6 py-4 flex items-center justify-between">
+                <h3 class="font-bold text-lg text-slate-900">Añadir Producto</h3>
+                <button onclick="cerrarModalProducto()" class="text-slate-400 hover:text-slate-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+            <form onsubmit="guardarNuevoProducto(event)" class="p-6 space-y-4">
+                <p class="text-sm text-slate-600">Añadiendo a: <span id="cat-actual-producto" class="font-semibold"></span></p>
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-2">Nombre del producto</label>
+                    <input type="text" id="nuevo-producto-nombre" required class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Ej: Cuadernos" autocomplete="off">
+                </div>
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 text-xs text-blue-700">
+                    💡 Este producto se añadirá a la lista de esta categoría y estará disponible para futuras donaciones.
+                </div>
+                <div class="flex gap-3 pt-2">
+                    <button type="button" onclick="cerrarModalProducto()" class="flex-1 px-4 py-2.5 border border-slate-300 rounded-lg font-semibold text-slate-700 hover:bg-slate-50 transition">Cancelar</button>
+                    <button type="submit" class="flex-1 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold shadow-md transition">Añadir</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="hidden fixed bottom-6 right-6 bg-green-600 text-white px-5 py-3 rounded-lg shadow-lg z-50 fade-in flex items-center gap-2">
+        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+        <span id="toast-mensaje">Donación registrada</span>
+    </div>
+
+    <script>
+        // ============ CONFIGURACIÓN DE CATEGORÍAS ============
+        const productosPorCategoria = {
+            higiene: [
+                'Shampoo', 'Perfumes', 'Cepillos de dientes', 'Crema dental',
+                'Toallas sanitarias', 'Toallitas húmedas', 'Jabón en barra',
+                'Toallas sanitarias post parto', 'Papel toilet'
+            ],
+            alimentos: [
+                'Compotas', 'Pasta', 'Arroz', 'Atún en lata', 'Harina de trigo',
+                'Leche en polvo', 'Fórmula láctea', 'Enlatados', 'Agua'
+            ],
+            farmacia: [
+                'Alcohol', 'Pastillas', 'Solución yodada', 'Batas de pacientes',
+                'Mascarillas', 'Guantes', 'Gorros', 'Jeringas', 'Yelcos'
+            ]
+        };
+
+        const configCategorias = {
+            higiene:   { nombre: 'Higiene',   emoji: '🧴', color: 'blue' },
+            alimentos: { nombre: 'Alimentos', emoji: '🍚', color: 'green' },
+            farmacia:  { nombre: 'Farmacia',  emoji: '💊', color: 'red' },
+            ropa:      { nombre: 'Ropa',      emoji: '👕', color: 'purple' }
+        };
+
+        const coloresDisponibles = [
+            { id: 'blue',   hex: '#3b82f6' },
+            { id: 'green',  hex: '#10b981' },
+            { id: 'red',    hex: '#ef4444' },
+            { id: 'purple', hex: '#a855f7' },
+            { id: 'amber',  hex: '#f59e0b' },
+            { id: 'pink',   hex: '#ec4899' },
+            { id: 'teal',   hex: '#14b8a6' },
+            { id: 'indigo', hex: '#6366f1' },
+            { id: 'orange', hex: '#f97316' },
+            { id: 'cyan',   hex: '#06b6d4' },
+            { id: 'lime',   hex: '#84cc16' },
+            { id: 'slate',  hex: '#64748b' }
+        ];
+
+        const estilosColor = {
+            blue:   { bg: 'bg-blue-100',   text: 'text-blue-700',   border: 'border-blue-600',   hover: 'hover:border-blue-300',   check: 'peer-checked:bg-blue-50' },
+            green:  { bg: 'bg-green-100',  text: 'text-green-700',  border: 'border-green-600',  hover: 'hover:border-green-300',  check: 'peer-checked:bg-green-50' },
+            red:    { bg: 'bg-red-100',    text: 'text-red-700',    border: 'border-red-600',    hover: 'hover:border-red-300',    check: 'peer-checked:bg-red-50' },
+            purple: { bg: 'bg-purple-100', text: 'text-purple-700', border: 'border-purple-600', hover: 'hover:border-purple-300', check: 'peer-checked:bg-purple-50' },
+            amber:  { bg: 'bg-amber-100',  text: 'text-amber-700',  border: 'border-amber-600',  hover: 'hover:border-amber-300',  check: 'peer-checked:bg-amber-50' },
+            pink:   { bg: 'bg-pink-100',   text: 'text-pink-700',   border: 'border-pink-600',   hover: 'hover:border-pink-300',   check: 'peer-checked:bg-pink-50' },
+            teal:   { bg: 'bg-teal-100',   text: 'text-teal-700',   border: 'border-teal-600',   hover: 'hover:border-teal-300',   check: 'peer-checked:bg-teal-50' },
+            indigo: { bg: 'bg-indigo-100', text: 'text-indigo-700', border: 'border-indigo-600', hover: 'hover:border-indigo-300', check: 'peer-checked:bg-indigo-50' },
+            orange: { bg: 'bg-orange-100', text: 'text-orange-700', border: 'border-orange-600', hover: 'hover:border-orange-300', check: 'peer-checked:bg-orange-50' },
+            cyan:   { bg: 'bg-cyan-100',   text: 'text-cyan-700',   border: 'border-cyan-600',   hover: 'hover:border-cyan-300',   check: 'peer-checked:bg-cyan-50' },
+            lime:   { bg: 'bg-lime-100',   text: 'text-lime-700',   border: 'border-lime-600',   hover: 'hover:border-lime-300',   check: 'peer-checked:bg-lime-50' },
+            slate:  { bg: 'bg-slate-100',  text: 'text-slate-700',  border: 'border-slate-600',  hover: 'hover:border-slate-300',  check: 'peer-checked:bg-slate-50' }
+        };
+
+        // ============ ESTADO ============
+        let inventario = JSON.parse(localStorage.getItem('inventario_eb') || '[]');
+        let categoriasPersonalizadas = JSON.parse(localStorage.getItem('categorias_personalizadas_eb') || '{}');
+        // productosPersonalizados ahora almacena productos añadidos para TODAS las categorías
+        let productosPersonalizados = JSON.parse(localStorage.getItem('productos_personalizados_eb') || '{}');
+        let imagenBase64 = null;
+        let categoriaSeleccionada = null;
+
+        // ============ INICIALIZACIÓN ============
+        document.addEventListener('DOMContentLoaded', () => {
+            renderizarDashboard();
+            renderizarInventario();
+            actualizarEstadisticas();
+            actualizarFiltroCategorias();
+            renderizarSelectorColor();
+        });
+
+        // ============ OBTENER TODOS LOS PRODUCTOS DE UNA CATEGORÍA ============
+        function obtenerProductosCategoria(key) {
+            const base = productosPorCategoria[key] || [];
+            const personalizados = productosPersonalizados[key] || [];
+            return [...base, ...personalizados];
+        }
+
+        function esProductoPersonalizado(key, producto) {
+            return (productosPersonalizados[key] || []).includes(producto);
+        }
+
+        // ============ DASHBOARD ============
+        function renderizarDashboard() {
+            const contenedor = document.getElementById('dashboard-categorias');
+            const todasCategorias = { ...configCategorias, ...categoriasPersonalizadas };
+            
+            contenedor.innerHTML = Object.entries(todasCategorias).map(([key, cat]) => {
+                const estilo = estilosColor[cat.color] || estilosColor.slate;
+                const total = inventario.filter(i => i.categoria === key).reduce((sum, i) => sum + i.cantidad, 0);
+                const icono = cat.emoji || '';
+                const numProductos = obtenerProductosCategoria(key).length;
+                
+                return `
+                    <div class="category-card bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 ${estilo.bg} rounded-xl flex items-center justify-center text-2xl">${icono}</div>
+                            <span class="text-xs font-medium ${estilo.text} ${estilo.bg} px-2 py-1 rounded">${cat.nombre.toUpperCase()}</span>
+                        </div>
+                        <p class="text-sm text-slate-500 mb-1">${cat.nombre}</p>
+                        <p class="text-3xl font-bold text-slate-900" id="total-${key}">${total.toLocaleString('es-ES')}</p>
+                        <p class="text-xs text-slate-400 mt-1">${numProductos} productos · unidades registradas</p>
+                        ${!configCategorias[key] ? `<button onclick="eliminarCategoria('${key}')" class="mt-3 text-xs text-red-500 hover:text-red-700"> Eliminar categoría</button>` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ============ MODAL DONACIÓN ============
+        function abrirModal() {
+            document.getElementById('modal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            renderizarCategoriasEnModal();
+        }
+
+        function cerrarModal() {
+            document.getElementById('modal').classList.add('hidden');
+            document.body.style.overflow = '';
+            document.getElementById('formulario').reset();
+            document.getElementById('producto').disabled = true;
+            document.getElementById('seccion-producto-estandar').classList.add('hidden');
+            document.getElementById('seccion-ropa').classList.add('hidden');
+            document.getElementById('preview-contenedor').innerHTML = `
+                <svg class="w-10 h-10 text-slate-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                <p class="text-sm text-slate-500">Haz clic para subir una imagen</p>
+                <p class="text-xs text-slate-400 mt-1">JPG, PNG (máx. 5MB)</p>
+            `;
+            imagenBase64 = null;
+            categoriaSeleccionada = null;
+        }
+
+        function renderizarCategoriasEnModal() {
+            const contenedor = document.getElementById('contenedor-categorias');
+            const todasCategorias = { ...configCategorias, ...categoriasPersonalizadas };
+            
+            contenedor.innerHTML = Object.entries(todasCategorias).map(([key, cat]) => {
+                const estilo = estilosColor[cat.color] || estilosColor.slate;
+                const icono = cat.emoji || '📦';
+                return `
+                    <label class="cursor-pointer">
+                        <input type="radio" name="categoria" value="${key}" onchange="seleccionarCategoria('${key}')" class="hidden peer" required>
+                        <div class="border-2 border-slate-200 rounded-xl p-3 text-center peer-checked:${estilo.border} ${estilo.check} ${estilo.hover} hover:border-slate-300 transition">
+                            <div class="text-2xl mb-1">${icono}</div>
+                            <div class="text-xs font-semibold text-slate-700">${cat.nombre}</div>
+                        </div>
+                    </label>
+                `;
+            }).join('');
+        }
+
+        function seleccionarCategoria(key) {
+            categoriaSeleccionada = key;
+            document.getElementById('seccion-producto-estandar').classList.add('hidden');
+            document.getElementById('seccion-ropa').classList.add('hidden');
+
+            if (key === 'ropa') {
+                document.getElementById('seccion-ropa').classList.remove('hidden');
+            } else {
+                // Mostrar sección estándar para TODAS las demás categorías
+                document.getElementById('seccion-producto-estandar').classList.remove('hidden');
+                const select = document.getElementById('producto');
+                select.disabled = false;
+                
+                const productos = obtenerProductosCategoria(key);
+                const personalizados = productosPersonalizados[key] || [];
+                
+                select.innerHTML = '<option value="">Selecciona un producto</option>';
+                
+                // Productos base
+                productos.forEach(p => {
+                    const esPersonalizado = personalizados.includes(p);
+                    const marca = esPersonalizado ? ' ' : '';
+                    select.innerHTML += `<option value="${p}">${p}${marca}</option>`;
+                });
+            }
+        }
+
+        // ============ NUEVA CATEGORÍA ============
+        function abrirModalNuevaCategoria() {
+            document.getElementById('modal-categoria').classList.remove('hidden');
+        }
+        function cerrarModalCategoria() {
+            document.getElementById('modal-categoria').classList.add('hidden');
+            document.getElementById('nueva-cat-nombre').value = '';
+            document.getElementById('nueva-cat-emoji').value = '📦';
+            document.getElementById('nueva-cat-producto').value = '';
+        }
+
+        function renderizarSelectorColor() {
+            const contenedor = document.getElementById('selector-color');
+            contenedor.innerHTML = coloresDisponibles.map(c => `
+                <button type="button" onclick="seleccionarColor('${c.id}')" 
+                    class="w-10 h-10 rounded-lg border-2 border-white shadow-md hover:scale-110 transition color-opcion"
+                    data-color="${c.id}" style="background-color: ${c.hex}">
+                </button>
+            `).join('');
+            seleccionarColor('purple');
+        }
+
+        function seleccionarColor(colorId) {
+            document.getElementById('nueva-cat-color').value = colorId;
+            document.querySelectorAll('.color-opcion').forEach(btn => {
+                btn.classList.toggle('ring-4', btn.dataset.color === colorId);
+                btn.classList.toggle('ring-slate-400', btn.dataset.color === colorId);
+            });
+        }
+
+        function guardarNuevaCategoria(event) {
+            event.preventDefault();
+            const nombre = document.getElementById('nueva-cat-nombre').value.trim();
+            const emoji = document.getElementById('nueva-cat-emoji').value.trim();
+            const color = document.getElementById('nueva-cat-color').value;
+            const primerProducto = document.getElementById('nueva-cat-producto').value.trim();
+            
+            const key = 'cat_' + Date.now();
+            categoriasPersonalizadas[key] = { nombre, emoji, color };
+            
+            if (primerProducto) {
+                productosPersonalizados[key] = [primerProducto];
+            } else {
+                productosPersonalizados[key] = [];
+            }
+            
+            guardarConfiguracion();
+            renderizarDashboard();
+            actualizarFiltroCategorias();
+            cerrarModalCategoria();
+            mostrarToast(`✓ Categoría "${nombre}" creada`);
+        }
+
+        function eliminarCategoria(key) {
+            if (!confirm(`¿Eliminar la categoría "${categoriasPersonalizadas[key].nombre}" y todos sus productos?`)) return;
+            delete categoriasPersonalizadas[key];
+            delete productosPersonalizados[key];
+            guardarConfiguracion();
+            renderizarDashboard();
+            actualizarFiltroCategorias();
+            mostrarToast('Categoría eliminada');
+        }
+
+        // ============ NUEVO PRODUCTO (para CUALQUIER categoría) ============
+        function abrirModalNuevoProducto() {
+            if (!categoriaSeleccionada) {
+                alert('Primero selecciona una categoría');
+                return;
+            }
+            const todasCategorias = { ...configCategorias, ...categoriasPersonalizadas };
+            const cat = todasCategorias[categoriaSeleccionada];
+            document.getElementById('cat-actual-producto').textContent = `${cat.emoji} ${cat.nombre}`;
+            document.getElementById('nuevo-producto-nombre').value = '';
+            document.getElementById('modal-producto').classList.remove('hidden');
+            setTimeout(() => document.getElementById('nuevo-producto-nombre').focus(), 100);
+        }
+        
+        function cerrarModalProducto() {
+            document.getElementById('modal-producto').classList.add('hidden');
+            document.getElementById('nuevo-producto-nombre').value = '';
+        }
+
+        function guardarNuevoProducto(event) {
+            event.preventDefault();
+            const nombre = document.getElementById('nuevo-producto-nombre').value.trim();
+            
+            if (!categoriaSeleccionada) return;
+            
+            // Verificar duplicados en TODOS los productos de la categoría
+            const todosLosProductos = obtenerProductosCategoria(categoriaSeleccionada);
+            if (todosLosProductos.includes(nombre)) {
+                alert(`⚠️ El producto "${nombre}" ya existe en esta categoría`);
+                return;
+            }
+            
+            // Inicializar array si no existe
+            if (!productosPersonalizados[categoriaSeleccionada]) {
+                productosPersonalizados[categoriaSeleccionada] = [];
+            }
+            
+            productosPersonalizados[categoriaSeleccionada].push(nombre);
+            guardarConfiguracion();
+            
+            // Actualizar select con el nuevo producto seleccionado
+            const select = document.getElementById('producto');
+            select.innerHTML = '<option value="">Selecciona un producto</option>';
+            const productos = obtenerProductosCategoria(categoriaSeleccionada);
+            const personalizados = productosPersonalizados[categoriaSeleccionada] || [];
+            
+            productos.forEach(p => {
+                const esPersonalizado = personalizados.includes(p);
+                const marca = esPersonalizado ? ' ' : '';
+                select.innerHTML += `<option value="${p}">${p}${marca}</option>`;
+            });
+            select.value = nombre;
+            
+            cerrarModalProducto();
+            renderizarDashboard(); // Actualizar contador de productos
+            mostrarToast(`✓ Producto "${nombre}" añadido a la categoría`);
+        }
+
+        // ============ GUARDAR DONACIÓN ============
+        function guardarDonacion(event) {
+            event.preventDefault();
+            const form = event.target;
+            const data = new FormData(form);
+            
+            let productoFinal = '';
+            let detalles = null;
+
+            if (categoriaSeleccionada === 'ropa') {
+                const tipo = document.getElementById('ropa-tipo').value;
+                const sexo = document.getElementById('ropa-sexo').value;
+                const edad = document.getElementById('ropa-edad').value;
+                const talla = document.getElementById('ropa-talla').value;
+                
+                if (!tipo || !sexo || !edad || !talla) {
+                    alert('Por favor completa todos los campos de la prenda');
+                    return;
+                }
+                productoFinal = `${tipo} | ${sexo} | ${edad} | Talla ${talla}`;
+                detalles = { tipo, sexo, edad, talla };
+            } else {
+                productoFinal = data.get('producto');
+                if (!productoFinal) { 
+                    alert('Selecciona un producto'); 
+                    return; 
+                }
+            }
+
+            const donacion = {
+                id: Date.now(),
+                categoria: categoriaSeleccionada,
+                producto: productoFinal,
+                detalles: detalles,
+                cantidad: parseInt(data.get('cantidad')),
+                unidad: data.get('unidad'),
+                donante: data.get('donante'),
+                notas: data.get('notas'),
+                imagen: imagenBase64,
+                fecha: new Date().toISOString()
+            };
+
+            inventario.push(donacion);
+            localStorage.setItem('inventario_eb', JSON.stringify(inventario));
+            
+            renderizarInventario();
+            actualizarEstadisticas();
+            actualizarFiltroCategorias();
+            actualizarFiltroProductos();
+            cerrarModal();
+            mostrarToast('✓ Donación registrada exitosamente');
+        }
+
+        // ============ RENDER TABLA ============
+        function renderizarInventario(datos = inventario) {
+            const tbody = document.getElementById('tabla-inventario');
+            const estadoVacio = document.getElementById('estado-vacio');
+            const contador = document.getElementById('contador-registros');
+
+            if (datos.length === 0) {
+                tbody.innerHTML = '';
+                estadoVacio.classList.remove('hidden');
+                contador.textContent = '0 registros';
+                return;
+            }
+
+            estadoVacio.classList.add('hidden');
+            contador.textContent = `${datos.length} registro${datos.length !== 1 ? 's' : ''}`;
+
+            const todasCategorias = { ...configCategorias, ...categoriasPersonalizadas };
+
+            tbody.innerHTML = datos.map(item => {
+                const cat = todasCategorias[item.categoria] || { nombre: item.categoria, emoji: '📦', color: 'slate' };
+                const estilo = estilosColor[cat.color] || estilosColor.slate;
+                const fecha = new Date(item.fecha).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' });
+                const imagenHtml = item.imagen 
+                    ? `<img src="${item.imagen}" class="w-10 h-10 rounded-lg object-cover">` 
+                    : `<div class="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center text-lg"></div>`;
+                
+                // Indicador si es producto personalizado
+                const esPersonalizado = esProductoPersonalizado(item.categoria, item.producto);
+                const badgePersonalizado = esPersonalizado 
+                    ? `<span class="inline-block ml-2 text-[10px] bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded font-medium">añadido</span>` 
+                    : '';
+                
+                return `
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="px-6 py-4">
+                            <div class="flex items-center gap-3">
+                                ${imagenHtml}
+                                <div>
+                                    <p class="font-semibold text-slate-900">${item.producto}${badgePersonalizado}</p>
+                                    ${item.notas ? `<p class="text-xs text-slate-400 truncate max-w-xs">${item.notas}</p>` : ''}
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <span class="px-2.5 py-1 rounded-full text-xs font-semibold ${estilo.bg} ${estilo.text}">${cat.emoji} ${cat.nombre}</span>
+                        </td>
+                        <td class="px-6 py-4">
+                            <p class="font-bold text-slate-900">${item.cantidad}</p>
+                            <p class="text-xs text-slate-500">${item.unidad}</p>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-slate-700">${item.donante}</td>
+                        <td class="px-6 py-4 text-sm text-slate-500">${fecha}</td>
+                        <td class="px-6 py-4">
+                            <button onclick="eliminarDonacion(${item.id})" class="text-red-500 hover:text-red-700 hover:bg-red-50 p-1.5 rounded-lg transition" title="Eliminar">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function actualizarEstadisticas() {
+            const todasCategorias = { ...configCategorias, ...categoriasPersonalizadas };
+            Object.keys(todasCategorias).forEach(key => {
+                const total = inventario.filter(i => i.categoria === key).reduce((sum, i) => sum + i.cantidad, 0);
+                const el = document.getElementById(`total-${key}`);
+                if (el) el.textContent = total.toLocaleString('es-ES');
+            });
+        }
+
+        function actualizarFiltroCategorias() {
+            const select = document.getElementById('filtro-categoria');
+            const valorActual = select.value;
+            const todasCategorias = { ...configCategorias, ...categoriasPersonalizadas };
+            select.innerHTML = '<option value="">Todas las categorías</option>' + 
+                Object.entries(todasCategorias).map(([k, c]) => `<option value="${k}">${c.emoji} ${c.nombre}</option>`).join('');
+            select.value = valorActual;
+        }
+
+        function actualizarFiltroProductos() {
+            const categoria = document.getElementById('filtro-categoria').value;
+            const select = document.getElementById('filtro-producto');
+            const datosFiltrados = categoria ? inventario.filter(i => i.categoria === categoria) : inventario;
+            const productosUnicos = [...new Set(datosFiltrados.map(i => i.producto))].sort();
+            select.innerHTML = '<option value="">Todos los productos</option>' + 
+                productosUnicos.map(p => `<option value="${p}">${p}</option>`).join('');
+        }
+
+        function filtrarInventario() {
+            const busqueda = document.getElementById('busqueda').value.toLowerCase();
+            const categoria = document.getElementById('filtro-categoria').value;
+            const producto = document.getElementById('filtro-producto').value;
+
+            const filtrados = inventario.filter(item => {
+                const coincideBusqueda = !busqueda || 
+                    item.producto.toLowerCase().includes(busqueda) || 
+                    item.donante.toLowerCase().includes(busqueda);
+                const coincideCategoria = !categoria || item.categoria === categoria;
+                const coincideProducto = !producto || item.producto === producto;
+                return coincideBusqueda && coincideCategoria && coincideProducto;
+            });
+
+            renderizarInventario(filtrados);
+        }
+
+        function eliminarDonacion(id) {
+            if (!confirm('¿Estás seguro de eliminar esta donación?')) return;
+            inventario = inventario.filter(i => i.id !== id);
+            localStorage.setItem('inventario_eb', JSON.stringify(inventario));
+            renderizarInventario();
+            actualizarEstadisticas();
+            renderizarDashboard();
+            mostrarToast('Donación eliminada');
+        }
+
+        // ============ IMAGEN ============
+        function previewImagen(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            if (file.size > 5 * 1024 * 1024) {
+                alert('La imagen no debe superar 5MB');
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                imagenBase64 = e.target.result;
+                document.getElementById('preview-contenedor').innerHTML = `
+                    <img src="${imagenBase64}" class="image-preview mx-auto rounded-lg shadow-sm">
+                    <p class="text-xs text-green-600 mt-2 font-medium">✓ Imagen cargada</p>
+                `;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // ============ DATOS DE EJEMPLO ============
+        function cargarDatosEjemplo() {
+            if (inventario.length > 0) {
+                if (!confirm('Ya hay datos registrados. ¿Añadir los ejemplos a los existentes?')) return;
+            }
+
+            const hoy = new Date();
+            const hace = (dias) => new Date(hoy.getTime() - dias * 86400000).toISOString();
+
+            const ejemplos = [
+                { categoria: 'higiene', producto: 'Shampoo', cantidad: 30, unidad: 'unidades', donante: 'Farmacia La Salud', notas: 'Donación mensual', fecha: hace(1) },
+                { categoria: 'higiene', producto: 'Cepillos de dientes', cantidad: 100, unidad: 'unidades', donante: 'Colgate-Palmolive', notas: '', fecha: hace(3) },
+                { categoria: 'higiene', producto: 'Crema dental', cantidad: 50, unidad: 'unidades', donante: 'Colgate-Palmolive', notas: '', fecha: hace(3) },
+                { categoria: 'higiene', producto: 'Toallas sanitarias', cantidad: 200, unidad: 'paquetes', donante: 'Asociación de Mujeres', notas: 'Urgente', fecha: hace(5) },
+                { categoria: 'higiene', producto: 'Jabón en barra', cantidad: 80, unidad: 'unidades', donante: 'Familia Rodríguez', notas: '', fecha: hace(7) },
+                { categoria: 'higiene', producto: 'Papel toilet', cantidad: 40, unidad: 'paquetes', donante: 'Supermercado Central', notas: '', fecha: hace(2) },
+                { categoria: 'higiene', producto: 'Toallitas húmedas', cantidad: 60, unidad: 'paquetes', donante: 'Johnson & Johnson', notas: '', fecha: hace(4) },
+                
+                { categoria: 'alimentos', producto: 'Arroz', cantidad: 100, unidad: 'kilos', donante: 'Molinos del Valle', notas: 'Saco de 50kg', fecha: hace(2) },
+                { categoria: 'alimentos', producto: 'Pasta', cantidad: 80, unidad: 'paquetes', donante: 'Pastas La Italiana', notas: '', fecha: hace(3) },
+                { categoria: 'alimentos', producto: 'Atún en lata', cantidad: 120, unidad: 'unidades', donante: 'Pesquera Nacional', notas: '', fecha: hace(1) },
+                { categoria: 'alimentos', producto: 'Leche en polvo', cantidad: 40, unidad: 'kilos', donante: 'Lácteos El Paraíso', notas: '', fecha: hace(6) },
+                { categoria: 'alimentos', producto: 'Harina de trigo', cantidad: 50, unidad: 'kilos', donante: 'Harinas PAN', notas: '', fecha: hace(4) },
+                { categoria: 'alimentos', producto: 'Agua', cantidad: 200, unidad: 'litros', donante: 'Empresas Polar', notas: 'Botellas de 1.5L', fecha: hace(1) },
+                { categoria: 'alimentos', producto: 'Compotas', cantidad: 90, unidad: 'unidades', donante: 'Gerber', notas: 'Para niños', fecha: hace(8) },
+                { categoria: 'alimentos', producto: 'Fórmula láctea', cantidad: 25, unidad: 'unidades', donante: 'Nestlé', notas: 'Etapa 1 y 2', fecha: hace(5) },
+                
+                { categoria: 'farmacia', producto: 'Alcohol', cantidad: 30, unidad: 'litros', donante: 'Laboratorios Farma', notas: '', fecha: hace(2) },
+                { categoria: 'farmacia', producto: 'Mascarillas', cantidad: 500, unidad: 'unidades', donante: 'Cruz Roja', notas: 'Quirúrgicas', fecha: hace(1) },
+                { categoria: 'farmacia', producto: 'Guantes', cantidad: 200, unidad: 'pares', donante: 'Hospital Central', notas: 'De látex', fecha: hace(3) },
+                { categoria: 'farmacia', producto: 'Jeringas', cantidad: 150, unidad: 'unidades', donante: 'Clínica San José', notas: 'Descartables', fecha: hace(4) },
+                { categoria: 'farmacia', producto: 'Batas de pacientes', cantidad: 40, unidad: 'unidades', donante: 'Textiles Médicos', notas: '', fecha: hace(7) },
+                { categoria: 'farmacia', producto: 'Solución yodada', cantidad: 20, unidad: 'unidades', donante: 'Farmacia La Salud', notas: '', fecha: hace(5) },
+                
+                { categoria: 'ropa', producto: 'Camisa / Blusa | Masculino | Adulto | Talla L', detalles: { tipo: 'Camisa / Blusa', sexo: 'Masculino', edad: 'Adulto', talla: 'L' }, cantidad: 25, unidad: 'unidades', donante: 'Tienda de Ropa El Estilo', notas: 'Nuevas con etiqueta', fecha: hace(2) },
+                { categoria: 'ropa', producto: 'Pantalón | Femenino | Adulto | Talla M', detalles: { tipo: 'Pantalón', sexo: 'Femenino', edad: 'Adulto', talla: 'M' }, cantidad: 15, unidad: 'unidades', donante: 'Doña María Pérez', notas: 'Usadas en buen estado', fecha: hace(3) },
+                { categoria: 'ropa', producto: 'Zapatos | Masculino | Niño (3-12 años) | Talla 4-6 años', detalles: { tipo: 'Zapatos', sexo: 'Masculino', edad: 'Niño (3-12 años)', talla: '4-6 años' }, cantidad: 10, unidad: 'pares', donante: 'Zapatería El Paso', notas: '', fecha: hace(1) },
+                { categoria: 'ropa', producto: 'Uniforme escolar | Unisex | Niño (3-12 años) | Talla 8-10 años', detalles: { tipo: 'Uniforme escolar', sexo: 'Unisex', edad: 'Niño (3-12 años)', talla: '8-10 años' }, cantidad: 30, unidad: 'unidades', donante: 'Asociación de Padres', notas: 'Para el próximo año escolar', fecha: hace(5) },
+                { categoria: 'ropa', producto: 'Chaqueta / Abrigo | Femenino | Adolescente (13-17) | Talla S', detalles: { tipo: 'Chaqueta / Abrigo', sexo: 'Femenino', edad: 'Adolescente (13-17)', talla: 'S' }, cantidad: 12, unidad: 'unidades', donante: 'Boutique Fashion', notas: '', fecha: hace(4) },
+                { categoria: 'ropa', producto: 'Pijama | Unisex | Bebé (0-2 años) | Talla 0-6 meses', detalles: { tipo: 'Pijama', sexo: 'Unisex', edad: 'Bebé (0-2 años)', talla: '0-6 meses' }, cantidad: 20, unidad: 'unidades', donante: 'Maternidad Dr. González', notas: '', fecha: hace(6) },
+            ];
+
+            ejemplos.forEach((ej, idx) => {
+                inventario.push({
+                    id: Date.now() + idx + Math.floor(Math.random() * 1000),
+                    ...ej
+                });
+            });
+
+            localStorage.setItem('inventario_eb', JSON.stringify(inventario));
+            renderizarInventario();
+            actualizarEstadisticas();
+            renderizarDashboard();
+            actualizarFiltroCategorias();
+            mostrarToast(`✓ ${ejemplos.length} donaciones de ejemplo cargadas`);
+        }
+
+        // ============ EXPORTAR CSV ============
+        function exportarCSV() {
+            if (inventario.length === 0) {
+                alert('No hay datos para exportar');
+                return;
+            }
+            const todasCategorias = { ...configCategorias, ...categoriasPersonalizadas };
+            const headers = ['Fecha', 'Categoría', 'Producto', 'Cantidad', 'Unidad', 'Donante', 'Notas'];
+            const rows = inventario.map(i => [
+                new Date(i.fecha).toLocaleDateString('es-ES'),
+                todasCategorias[i.categoria]?.nombre || i.categoria,
+                i.producto,
+                i.cantidad,
+                i.unidad,
+                i.donante,
+                i.notas || ''
+            ]);
+            const csv = [headers, ...rows].map(r => r.map(c => `"${c}"`).join(',')).join('\n');
+            const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `donaciones_eb_${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            mostrarToast('✓ CSV exportado');
+        }
+
+        // ============ UTILIDADES ============
+        function guardarConfiguracion() {
+            localStorage.setItem('categorias_personalizadas_eb', JSON.stringify(categoriasPersonalizadas));
+            localStorage.setItem('productos_personalizados_eb', JSON.stringify(productosPersonalizados));
+        }
+
+        function mostrarToast(mensaje) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-mensaje').textContent = mensaje;
+            toast.classList.remove('hidden');
+            setTimeout(() => toast.classList.add('hidden'), 3000);
+        }
+
+        document.getElementById('modal').addEventListener('click', (e) => {
+            if (e.target.id === 'modal') cerrarModal();
+        });
+        document.getElementById('modal-categoria').addEventListener('click', (e) => {
+            if (e.target.id === 'modal-categoria') cerrarModalCategoria();
+        });
+        document.getElementById('modal-producto').addEventListener('click', (e) => {
+            if (e.target.id === 'modal-producto') cerrarModalProducto();
+        });
+    </script>
+</body>
+</html>
